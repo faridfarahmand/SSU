@@ -1,8 +1,8 @@
 ## Description of the programs 
-Create a project using Visual Code + Platform IO - make sure you are selecting ESP8266 as your device 
-Place the main.cpp in src and myheader.h in Include folders. 
-Compile and run the program
-You should get something like this
+1. Create a project using Visual Code + Platform IO - make sure you are selecting ESP8266 as your device 
+2. Place the main.cpp in src and myheader.h in Include folders. 
+3. Compile and run the program
+    - You should get something like this
 1.70, 0.99, 2.89
 1.80, 0.97, 3.19
 1.90, 0.95, 3.42
