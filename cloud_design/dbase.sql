@@ -1,8 +1,8 @@
-Example 
-Click on SQL - make sure your screen setting is he same as below (pay attention to check marks
-Make sure the Retain Query Box and Enable Foreign Key are checked. 
+NOTES: 
+--| Click on SQL - make sure your screen setting is he same as below (pay attention to check marks):
+--| Make sure the Retain Query Box and Enable Foreign Key are checked. 
+--| In the editor type the following and press GO. Do one mySQL command at a time 
 
-In the editor type the following and press GO. Do one mySQL command at a time 
 -- Create a table
 CREATE TABLE Book(  
 id INT NOT NULL AUTO_INCREMENT,  
