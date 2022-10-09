@@ -2,8 +2,6 @@ Example
 Click on SQL - make sure your screen setting is he same as below (pay attention to check marks
 Make sure the Retain Query Box and Enable Foreign Key are checked. 
 
-
-
 In the editor type the following and press GO. Do one mySQL command at a time 
 -- Create a table
 CREATE TABLE Book(  
@@ -64,16 +62,25 @@ VALUES
 
 
 SELECT * from Book; -- check the entries in your table
+
+-- Your OUTPUT    
+name   	id	
+MariaDB Book1a	1	
+MariaDB Book2	2	
+MariaDB Book3	3	
+MariaDB Book4	4	
+MariaDB Book5	5	
+
 SELECT * from Price; -- check the entries in your table
-
-
-
-
-In the phpMyAdmin menu (left hand of the screen) click on your database. Then click on More--> Designer
-
-
-
-
+-- YOUT OUTPUT 
+price id 
+250 1
+252 2
+223 3
+194 4
+305 5
+251 6
+                                                                  
 --- Update/change the price
 UPDATE Price
 SET price = 250
@@ -124,4 +131,3 @@ ON Book.id = Price.id;
 
   
 
-Click on the Structure Tab: 
