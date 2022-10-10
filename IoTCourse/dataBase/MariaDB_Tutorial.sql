@@ -4,6 +4,12 @@ NOTES:
 --| In the editor type the following and press GO. Do one mySQL command at a time 
 --| Link to this page: https://github.com/faridfarahmand/SSU/blob/main/IoTCourse/dataBase/MariaDB_Tutorial.sql 
 
+-- Explore the databases
+SHOW DATABASES;
+
+-- Use the appropriate database
+USE id19686307_myfirstdbase;
+
 -- Create a table
 CREATE TABLE Book(  
 id INT NOT NULL AUTO_INCREMENT,  
