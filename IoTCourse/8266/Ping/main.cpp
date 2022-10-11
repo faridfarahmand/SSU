@@ -36,6 +36,7 @@ void setup() {
   Serial.println(WiFi.RSSI());// -59 for example
   Serial.println(WiFi.localIP()); //8266 current IP address
   Serial.println(WiFi.SSID()); // SSID available - a number
+  Serial.println(ssid);// connected to given ssid
 
   Serial.println(Ping.averageTime());// some number 
   Serial.println(Ping.ping(remote_host));// 1=connected; 0 not connected
