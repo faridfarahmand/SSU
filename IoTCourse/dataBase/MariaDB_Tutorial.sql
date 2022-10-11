@@ -134,6 +134,58 @@ ORDER BY price;
 SELECT Book.name, Price.price 
 FROM Book   
 INNER JOIN Price 
-ON Book.id = Price.id;   
+ON Book.id = Price.id;
 
+-- Creating a VIEW; 
+-- VIEW is a virtual representatin of several tables together. Let's create a VIEW of Book and Price tables
+-- First let's modify our tables
+ALTER TABLE websites
+  DROP PRIMARY KEY; 
   
+-- Create a table
+CREATE TABLE Book2(  
+id INT NOT NULL AUTO_INCREMENT,  
+name VARCHAR(100) NOT NULL,  
+PRIMARY KEY (id)); 
+    
+CREATE TABLE Price2(  
+id INT NOT NULL,
+price float NOT NULL, 
+Foreign Key (id) REFERENCES Book2(id));
+ 
+-- Insert books 
+INSERT INTO Book2 -- insert multiple records
+(id, name)  
+VALUES  
+(1,'MariaDB Book1'), 
+(2,'MariaDB Book2'),  
+(3,'MariaDB Book3'),  
+(4,'MariaDB Book4'),  
+(5,'MariaDB Book5');  
+
+INSERT INTO Book2 -- You must first register the Book and then give it a price
+(id, name)  
+VALUES  
+(6,'MariaDB Book6'); 
+
+-- insert associated prices - pay attention to upper/lower cases
+INSERT INTO Price2 
+(id, price)  
+VALUES
+(6, 251);
+
+-- Creating a VEIW of all tables
+CREATE VIEW COMBINED AS SELECT
+    Book2.name,
+    Book2.id,
+    Price2.price
+FROM
+    Book2,
+    Price2
+WHERE
+    Book2.id = Price2.id; 
+    
+SELECT * FROM COMBINED;
+
+DROP VIEW IF EXISTS
+    COMBINED;
