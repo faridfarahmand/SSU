@@ -32,7 +32,7 @@ SELECT * from Book; -- check the entries in your table
 DROP TABLE ` Book ` ;  -- you may have to retype this; don't copy and paste
 
 -- Remove the columns
-ALTER TABLE `Book` 
+ALTER TABLE Book 
   DROP `id`,
   DROP `name`;
 
