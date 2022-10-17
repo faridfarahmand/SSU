@@ -10,11 +10,39 @@ SHOW DATABASES;
 -- Use the appropriate database
 USE id19686307_myfirstdbase;
 
+-- Example of table with constraint
+CREATE TABLE t2 (name VARCHAR(30) CHECK (CHAR_LENGTH(name)>2), start_date DATE, 
+  end_date DATE CHECK (start_date IS NULL OR end_date IS NULL OR start_date<end_date));
+INSERT INTO t2(name, start_date, end_date) VALUES('Ione', '2003-12-15', '2014-11-09');
+INSERT INTO t2(name, start_date, end_date) VALUES('Io', '2003-12-15', '2014-11-09'); -- will fail the constraint
+INSERT INTO t2(name, start_date, end_date) VALUES('Ione', NULL, '2014-11-09');
+INSERT INTO t2(name, start_date, end_date) VALUES('Ione', '2015-12-15', '2014-11-09'); -- will fail the constraint
+-------------------
+
+-- Example of auto_increment / auto_increment is defined differently in other databases
+-- AUTO_INCLREMENT is used to automaically increment the product_id every time there is an insert
+CREATE TABLE product (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  product_name VARCHAR(200),
+  price INT
+);
+INSERT INTO product (product_name, price)
+VALUES ('Desk chair', 50);
+-------------------
+
+
 -- Create a table
 CREATE TABLE Book(  
 id INT NOT NULL AUTO_INCREMENT,  
 name VARCHAR(100) NOT NULL,  
 PRIMARY KEY (id)); 
+
+-- NOTE: A null value in a relational database is used when the value in a column 
+-- is unknown or missing. A null is neither an empty string (for character or 
+-- datetime data types) nor a zero value (for numeric data types).
+
+-- NOTE: Primary keys are a central element in SQL databases. They provide a unique value 
+-- that can identify a specific row in a table, which opens up a lot of other benefits.
 
 SHOW TABLES; -- see available tables 
 DESC Book; -- to see the structure of the table 
