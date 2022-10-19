@@ -1,3 +1,9 @@
 Use these files to plot your data using Chartjs library. 
+- Create a folder called Chartjs
+- Download all teh files in your folder
+
 Read the lecture slides for more details: 
 https://docs.google.com/presentation/d/1yF-yzRYRtVob93PLIVHE0Yb02M2fPdnN/edit?usp=sharing&ouid=111229422470150013614&rtpof=true&sd=true 
+
+To access your graph make sure you use teh following: 
+https://yourusername.000webhostapp.com/Chartjs/gragh.html 
