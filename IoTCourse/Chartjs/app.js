@@ -1,27 +1,28 @@
 $(document).ready(function(){
   $.ajax({
-    url: "https://faridfarahmand.000webhostapp.com/Chartjs/data.php",
+    url: "https://faridfarahmand.000webhostapp.com/Chartjs/data.php", // location of the datafile
     method: "GET",
     success: function(data) {
       console.log(data);
-      var Node_ID = [];
-      var Node_Temp = [];
+      var x_axis = []; // a generic variable
+      var y_axis = [];
 
       for(var i in data) {
-        Node_ID.push("N:" + data[i].id);
-        Node_Temp.push(data[i].temperature);
+        x_axis.push("N:" + data[i].time_received); // must match your dBase columns
+        y_axis.push(data[i].temperature);
       }
 
       var chartdata = {
-        labels: Node_ID,
+        labels: x_axis,
         datasets : [
           {
-            label: 'Temperature',
-            backgroundColor: 'rgba(200, 200, 200, 0.75)',
-            borderColor: 'rgba(200, 200, 200, 0.75)',
+            label: 'Temperature', //Title
+            // Change colors: https://www.w3schools.com/css/tryit.asp?filename=trycss3_color_rgba 
+            backgroundColor: 'rgba(200, 200, 200, 0.75)', 
+            borderColor: 'rgba(200, 200, 200, 0.75)', 
             hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
             hoverBorderColor: 'rgba(200, 200, 200, 1)',
-            data: Node_Temp
+            data: y_axis
           }
         ]
       };
@@ -29,7 +30,7 @@ $(document).ready(function(){
       var ctx = $("#mycanvas");
 
       var barGraph = new Chart(ctx, {
-        type: 'bar',
+        type: 'bar',   //Chart Type 
         data: chartdata
       });
     },
