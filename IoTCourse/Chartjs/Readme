@@ -2,7 +2,8 @@ Use these files to plot your data using Chartjs library.
 - Create a folder called Chartjs
 - Download all the files in your folder
 
-See the diagram for decription of files.
+See the diagram.png to understand the interaction between files:
+https://github.com/faridfarahmand/SSU/blob/main/IoTCourse/Chartjs/chartjs_diagram.png 
 
 Read the lecture slides for more details: 
 https://docs.google.com/presentation/d/1yF-yzRYRtVob93PLIVHE0Yb02M2fPdnN/edit?usp=sharing&ouid=111229422470150013614&rtpof=true&sd=true 
