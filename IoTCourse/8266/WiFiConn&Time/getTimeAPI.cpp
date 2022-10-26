@@ -18,8 +18,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>  // must be installed 
 
-const char* ssid     = "Wifi khoneh"; // must be exactly as it apears - case sensitive
-const char* password = "Ivonne!234";
+const char* ssid     = "Wifi"; // must be exactly as it apears - case sensitive
+const char* password = "Ixcd";
 
 // Exampe: https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles
 String url     = "https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles";
