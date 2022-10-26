@@ -19,8 +19,8 @@
 #include <sendRequest.h> // required header file
 //#include <WiFiClientSecure.h> // not needed
 
-const char* ssid     = "Wifi khoneh"; // must be exactly as it apears - case sensitive
-const char* password = "Ivonne!234";
+const char* ssid     = "Wifi"; // must be exactly as it apears - case sensitive
+const char* password = "Ixdcd";
 
 //https://faridfarahmand.000webhostapp.com/PHPCRUD/firstphp_db_insert.php?nodeId=node_3&nodeTemp=39&timeReceived=2022-10-25T20:44:11.4055468
 String url     = "https://faridfarahmand.000webhostapp.com/PHPCRUD/firstphp_db_insert.php";
