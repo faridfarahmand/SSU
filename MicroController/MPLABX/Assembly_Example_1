@@ -1,6 +1,28 @@
 
-; PIC18F46K42 Configuration Bit Settings
+C:\Users\student\Documents\myMPLABXProjects\Fifth_LED.X\led_v1.asm
 
+;---------------------
+; Title: Waveform Generator with Delay
+;---------------------
+;Program Details:
+; The purpose of this program is to load two bytes, Byte1 (F2H) and Byte2 (22H), in data registers REG0 and ; REG1, respectively and add the bytes.
+; If the sum generates a carry, clear the data register REG2; otherwise, save the sum in REG2.
+
+; Inputs: Inner_loop ,Outer_loop 
+; Outputs: PORTD
+; Date: Feb 24, 2023
+; File Dependencies: None 
+; Compiler: xc8, 2.4
+; Author: Farid Farahmand
+; Versions:
+;       V1.3: Changes teh loop size
+;         
+
+    
+;---------------------
+; Configuration Bits
+;---------------------
+; PIC18F46K42 Configuration Bit Settings
 ; Assembly source line config statements
 
 ; CONFIG1L
@@ -50,53 +72,57 @@
   CONFIG  WRTSAF = OFF          ; SAF Write protection bit (SAF not Write Protected)
   CONFIG  LVP = ON              ; Low Voltage Programming Enable bit (Low voltage programming enabled. MCLR/VPP pin function is MCLR. MCLRE configuration bit is ignored)
 
-; CONFIG5L
   CONFIG  CP = OFF              ; PFM and Data EEPROM Code Protection bit (PFM and Data EEPROM code protection disabled)
 
-; CONFIG5H
 
 ; config statements should precede project file includes.
+  
+;---------------------
+; Initialization
+;---------------------
 #include <xc.inc>
 
-
-REG10	equ	10h
-REG11   equ	11h
-REG01	equ	1h
-
-   //Where “MyCode” is the section name, “class=CODE” 
- // tells the linker to use the default code section, “delta=2"
- //tells the linker the number of data bytes that are associated with each address.
+;---------------------
+; Program Inputs
+;---------------------
+Inner_loop  equ 5 // in decimal
+Outer_loop  equ 5
  
-PSECT absdata,abs,ovrld
-ORG 10h
+;---------------------
+; Program Constants
+;---------------------
+REG10   equ     10h   // in HEX
+REG11   equ     11h
+REG01   equ     1h
 
+;---------------------
+; Main Program
+;---------------------
+    PSECT absdata,abs,ovrld
+    
+    ORG          0                     ;Reset vector
+    GOTO        _start1
 
-;//** M A I N   C O D E  ***********/
-; Use editor: https://www.tutorialspoint.com/compile_assembly_online.php
-
+    ORG          0020H           ; Begin assembly at 0020H
 
 _start1:
-    MOVLW	0b11111100
-    MOVWF	TRISA,0
-    MOVWF	REG10,0
+    MOVLW       0b11111100
+    MOVWF       TRISD,0
+    MOVWF       REG01,0
 
 _onoff:
+    MOVFF       REG01,PORTD
+    MOVLW       Inner_loop
+    MOVWF       REG10
+    MOVLW       Outer_loop
+    MOVWF       REG11
 
-    MOVLW	100
-    MOVWF	REG10,0
-
-    MOVLW	10
-    MOVWF	REG11,0
-    ;; we can add the loop1 here to create delay
-  ;<editor-fold defaultstate="collapsed" desc="comment">
-    COMF	REG01,1,0
-
-    BRA     	_onoff
-
-;;loop1:
-;    decf	reg10,1
-;    bnz     loop1
-;    decf     reg11,1
-;    bnz     loop1
-
+_loop1:
+    DECF        REG10,1
+    BNZ         _loop1
+    ;DECF        REG11,1 // outer loop
+    ;BNZ        _loop1
+    
+    COMF        REG01,1 // Negate the register 
+    BRA         _onoff
 END
