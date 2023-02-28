@@ -1,0 +1,146 @@
+; The following sample codes can be used on PIC Simulator OShon
+; You can use each section and examine teh results 
+;----------------------------
+; Togle a PIN on PORTC
+;----------------------------
+    ORG	0x20
+    MOVLW	0x00
+    MOVWF	TRISC
+    MOVLW	0x30
+    MOVWF 	PORTC, 0
+    NOP
+    MOVLW	0x31
+    MOVWF 	PORTC, 0
+    NOP
+    MOVLW	0x32
+    MOVWF 	PORTC, 0
+    SLEEP
+
+;----------------------------
+; Add values and check the status register 
+;----------------------------
+REG1	EQU	0x1
+
+	; ORG	0x20
+	CLRF	STATUS,1
+	CLRF	TRISC,1
+
+
+	MOVLW	0x60
+	ADDLW	0x2
+	ADDWF	0x1,1 ; keep results in register
+
+	MOVLW	0x5
+	ADDWF	0x1,0 ; keep results in W
+
+	MOVFF	0x1,0x2
+	INCF	0X1,F
+	DECF	0X2,F
+
+	MOVLW	0XFF
+	MOVWF	0X4
+	CLRF	0X4
+	SETF	0X3
+
+	MOVLW	0X1
+	MOVWF	0X5
+	NEGF	0X5	; TWO'S COMPLEMENT
+
+	MOVLW	0X1
+	MOVWF	0X6
+	SWAPF	0X6,1	; SWAP
+
+	MOVLW	0X1
+	MOVWF	0X7
+	COMF	0X7,1  ; 1'S COMPLEMENT
+
+	MOVLW	0X1
+	MOVWF	0X8
+	RLNCF	0X8,1	; SHIFT TO THE LEFT
+	RRNCF	0X8,1
+
+
+	MOVLW	0XF0
+	MOVWF	0X9
+	BCF	0X9,4,1	; CLEAR BIT 4
+	BSF	0X9,1,1	; SET BIT 1
+	BTG	0X9,0,1	; TOGGLE BIT 0
+	SLEEP
+
+
+
+
+;----------------------------
+; Check if negative:
+;----------------------------
+    MOVLW 	0X5
+    MOVWF	0X1
+    MOVLW 	0X4
+    MOVWF	0X2
+
+    CPFSGT	0X1
+    GOTO	notGREATER
+    GOTO	GREATER
+
+  notGREATER GOTO	notGREATER
+
+  GREATER GOTO	GREATER
+  
+  ;----------------------------
+  ; Check statis egister and using CALL 
+  ;----------------------------
+    ORG 0x00
+    MOVFF	W,STATUS
+    MOvLW	0X88
+    ADDLW	0X88       ;ADD 0X88+0X88= 0X1 10
+
+    MOVLW	0X0
+    MOVFF	W,STATUS
+    MOvLW	0X80
+    SUBLW	0X1       ;ADD 0X88+0X88= 0X1 10
+
+    ; CONDITINAL BRANCHES
+    MOVLW	0X0
+    MOVFF	W,STATUS
+    MOvLW	0X1
+    MOVWF	0X10	;REG10 IS 1
+    DECFSZ  0X10,1	; REG10=0
+    MOVLW	0XA	; SKIP THIS
+    NOP
+
+    MOVLW	0X0
+    MOVFF	W,STATUS
+    MOvLW	0X3
+    MOVWF	0X10	;REG10 IS 1
+  AGAIN	DECF	0X10,F
+    BNZ  	AGAIN	; KEEP LOOPING (branch to AGAIN IF NOT ZERO)
+
+    MOVLW	0XA	;
+    NOP
+
+    MOVLW	0X0
+    MOVFF	W,STATUS
+    MOvLW	0X1
+    MOVWF	0X10
+  AGAIN2	DECF	0X10,F
+    BZ  	AGAIN2	; KEEP LOOPING UNTIL REG10 NON-ZERO
+
+    MOVLW	0XA	;
+  AGAIN3	NOP
+
+    CALL MYDELAY
+    GOTO AGAIN3
+
+
+  OVER	GOTO	OVER
+  ;------ DELAY SUBROUTINE
+  MYDELAY	ORG 	0X100
+    MOVLW	0XFF
+    MOVWF	0X20	; HOLD THE VALUE
+  LOOP	NOP
+    NOP
+    DECF	0X20,F
+    BNZ	LOOP
+    RETURN
+    END
+
