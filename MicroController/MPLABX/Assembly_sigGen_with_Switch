@@ -30,7 +30,7 @@
 ;---------------------
 ; Program Inputs
 ;---------------------
-Inner_loop  equ 200 // in decimal
+Inner_loop  equ 201 // in decimal
 Outer_loop  equ 100
  
 ;---------------------
