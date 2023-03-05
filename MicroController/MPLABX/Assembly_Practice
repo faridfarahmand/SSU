@@ -1,0 +1,111 @@
+;---------------------
+; Title: Practicing Assembly COmmands 
+;---------------------
+;Program Details:
+; The purpose of this program is to practice with different assembly commands
+;    Run this file in debug mode and onserve the results. Make sure 
+;    you understand what is happening
+; Inputs: none
+; Outputs: none
+; Setup: Simulation mode
+; Date: Feb 24, 2023
+; File Dependencies / Libraries: It is required to include the 
+;   AssemblyConfig.inc in the Header Folder
+; Compiler: xc8, 2.4
+; Author: Farid Farahmand
+; Versions:
+;       V1.0: Original
+; Useful links: 
+;       Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/PIC18(L)F26-27-45-46-47-55-56-57K42-Data-Sheet-40001919G.pdf 
+;       PIC18F Instruction Sets: https://onlinelibrary.wiley.com/doi/pdf/10.1002/9781119448457.app4 
+;       List of Instrcutions: http://143.110.227.210/faridfarahmand/sonoma/courses/es310/resources/20140217124422790.pdf 
+
+;---------------------
+; Initialization
+;---------------------
+#include "AssemblyConfig.inc"
+#include <xc.inc>
+
+;---------------------
+; Program Inputs
+;---------------------
+Inner_loop  equ 50 // in decimal
+Outer_loop  equ 50
+ 
+;---------------------
+; Program Constants
+;---------------------
+REG10   equ     10h   // in HEX
+REG11   equ     11h
+REG12   equ     12h
+REG13   equ     13h
+REG14   equ     14h
+REG15   equ     15h
+REG16   equ     16h
+REG17   equ     17h
+REG18   equ     18h
+REG19   equ     19h
+
+   
+;---------------------
+; Main Program
+;---------------------
+    PSECT absdata,abs,ovrld        ; Do not change
+
+    ORG          00H           ; Begin assembly at 0020H
+    
+_main:
+   MOVLW    10h
+   MOVWF    REG10
+   MOVLW    4
+   SUBWF    REG10,W	;W=C=12d
+    
+   NOP
+   MOVLW	0Fh
+   ADDLW	30h
+   XORLW	3Fh			;w=0
+  
+   NOP
+   MOVLW    5 
+   MOVWF    REG12
+   MOVLW    4
+   MULWF    REG12
+   MOVFF    PRODL,WREG ;WREG=PRODL=5x4=20d=14h
+   
+   NOP
+   MOVLW    100 ;decimal
+   RRNCF    WREG         ;W=01100100 --> WREG=00110010=50d
+   
+   NOP
+   MOVLW    30h
+   MOVWF    REG13
+   MOVLW    3Ah
+   MOVWF    REG14
+   MOVFF    REG13,WREG     ;REG13=30h=W=48d, REG14=3A
+   CPFSGT   REG14	    ;REG14 is greater --> Skip --> W=30h=48d
+   ADDLW    2
+   GOTO	    _continute
+ _continute: 
+   
+   NOP
+   MOVLW    0
+   MOVFF    WREG,STATUS 
+   MOVLW    96 ;decimal
+   ADDLW    70	;decimal      --> results A6=166d=1010 0110 OV=1
+   
+;-----The Delay Subroutine    
+loopDelay: 
+    MOVLW       Inner_loop
+    MOVWF       REG10
+    MOVLW       Outer_loop
+    MOVWF       REG11
+_loop1:
+    DECF        REG10,1
+    BNZ         _loop1
+    DECF        REG11,1 // outer loop
+    BNZ        _loop1
+    RETURN
+
+    END
+
+
