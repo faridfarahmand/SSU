@@ -67,8 +67,8 @@ _start1:
     MOVWF	TRISD ;and set RD0 as ouput
     
 _onoff:
-    BTFSC	SWITCH  ; By removing these two lines the input has no impact
-    BRA		_onoff
+   ; BTFSC	SWITCH  ; By removing these two lines the input has no impact 
+   ; BRA		_onoff.  ; If not removed: If BIT is CLR (pressed) then it will skip and blink
 
     BTG		LED0
     MOVLW       Inner_loop
