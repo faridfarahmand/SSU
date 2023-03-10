@@ -1,0 +1,53 @@
+;---------------------
+; Title: Simple Addition Using Assembly
+;---------------------
+;Program Details:
+; The purpose of this program is to load two bytes, Byte1 (F2H) and Byte2 (22H), in data registers REG0 and ; REG1, respectively and add the bytes.
+; If the sum generates a carry, clear the data register REG2; otherwise, save the sum in REG2.
+
+; Inputs: BYTE1 & BYTE 2
+; Outputs: REG2
+; Date: date and time
+; Compiler: Simulator Version ????
+; Author: name of the author
+; Versions:
+;           V1 - What is the version numer and what is the change for each version?
+;           V2 - What is the version numer and what is the change for each version?
+;---------------------
+; File Dependencies: these are the listing and header files you need to run the
+;   program
+;---------------------
+
+;---------------------
+; Initialization
+;---------------------
+
+
+;---------------------
+; Program Inputs
+;---------------------
+BYTE1	EQU		0xF2		;Data bytes 
+BYTE2	EQU		0x32
+
+;---------------------
+; Program Constants
+;---------------------
+REG0	EOU		0x00		;Data Register addresses
+REG1	EQU		0x01
+REG2	EQU		0x02
+
+;---------------------
+; Main Program
+;---------------------
+		0RG		00			;Reset vector
+		GOTO	START
+
+		ORG		0020H		;Begin assembly at 0020H
+SART:	MOVLW	BYTE1		;Load F2H into W register
+        MOVWF	REG0,0		;Save F2H in REG0
+		MOVLW	BYTE3		;Load 32H into W register
+		ADDWF	REG0,0,0	;Add byte in REG0 to REG1
+		BN    	SAVE		;If no carry, go to location SAVE
+SAVE	MOVWF	REG2,0 		;Save Result or clear REG
+		SLEEP				;Power down
+		END
