@@ -1,0 +1,52 @@
+	Title "IP6-5: Finding Average Temperature"
+	List p=18F452, f =inhx32
+	#include <p18F452.inc>		;The header file
+
+LO_SUM		EQU 	0x01			;Define data register address
+HI_SUM		EQU		0x02
+AVERAGE		EQU		0x03
+LO_BYTE		EQU		0x04
+HI_BYTE 	EQU		0x05
+QUOTIENT	EQU		0x06
+COUNTER		EQU		0x07
+BUFFER 		EQU		0x10			;Data stored starting from register 10H
+
+
+		ORG	0x20				;Begin assembly at 0020H
+START:	MOVLW	D'16' 			;REG0 is used to store maximum temperature
+		MOVWF	COUNTER
+		LFSR	FSR0,BUFFER		;Set up FSR0 as pointer for data registers
+		CLRF	WREG,0
+		CLRF	LO_SUM
+		CLRF	HI_SUM
+SUM:		ADDWF	POSTINC0,0,0 		;Get data byte in WREG
+		BTFSC	STATUS,C
+		INCF	HI_SUM			;Is byte = 0? If yes, data string is finished
+		DECF	COUNTER,1,0
+		BNZ		SUM
+		MOVWF	LO_SUM
+		MOVFF	LO_SUM, LO_BYTE
+		MOVFF	HI_SUM, HI_BYTE
+
+AVG1:		MOVLW	0x04
+		MOVWF	COUNTER
+CLEARLY:	BCF 	STATUS, C 	;Byte is negative - go back
+		RRCF	HI_SUM
+		RRCF	LO_SUM
+		DECF	COUNTER,1,0
+		BNZ		CLEARCY
+		MOVFF	LO_SUM,AVERAGE
+
+AVG2:	MOVFF	LO_BYTE, LO_SUM
+		MOVFF	HI_BYTE, HI_SUM
+		CLRF	QUOTIENT
+DIVIDE:	MOVLW	D'16'
+		INCF	QUOTIENT
+		SUBWF	LO_SUM
+		BTFSC	STATUS, 0
+		GOTO	DIVIDE
+		DECF	HI_SUM
+		BTFSC	STATUS, 0
+		GOTO	DIVIDE
+		DECF	QUOTIENT
+		END
