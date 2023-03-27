@@ -1,0 +1,25 @@
+	Title "Check Key"
+	List p=18F452, f=inhx32
+	#include <p18F452.inc>	;This is a header file for 18F452
+							;It includes definitions of SFRs
+BYTE1	EQU		0xF2		;Data bytes
+BYTE2	EQU		0x32
+REG0	EQU		0x00		;Data Register addresses
+REG1	EQU		0x01
+REG2	EQU		0x02
+
+		GOTO	MAIN
+
+BYTE	MACRO	COUNT
+		MOVLW	COUNT
+		ADDLW	2
+		ENDM
+		
+		ORG		0x020		;Begin assembly at 0020
+MAIN:			
+		MOVLW	0x12
+		BYTE	05
+		MOVLW	0x12
+		BYTE	05				
+		SLEEP				;Power down
+		END
