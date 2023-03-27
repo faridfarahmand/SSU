@@ -1,0 +1,110 @@
+;---------------------
+; Title: Read and Write into the EEPROM
+;---------------------
+;Program Details:
+; The purpose of this program is to write into a regiater in EEPROM 
+;   and read it back from EEPROM. In this process we use two macros
+; Inputs: none
+; Outputs: none
+; Setup: Simulation mode
+; Date: Feb 24, 2023
+; File Dependencies / Libraries: It is required to include the 
+;   AssemblyConfig.inc in the Header Folder
+; Compiler: xc8, 2.4
+; Author: Farid Farahmand
+; Versions:
+;       V1.0: Original
+; Useful links: 
+;       Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/PIC18(L)F26-27-45-46-47-55-56-57K42-Data-Sheet-40001919G.pdf 
+;       PIC18F Instruction Sets: https://onlinelibrary.wiley.com/doi/pdf/10.1002/9781119448457.app4 
+;       List of Instrcutions: http://143.110.227.210/faridfarahmand/sonoma/courses/es310/resources/20140217124422790.pdf 
+
+;---------------------
+; Initialization
+;---------------------
+#include "AssemblyConfig.inc"
+#include <xc.inc> 
+
+;---------------------
+; Definitions
+;---------------------
+#define RD 0
+#define WR 1
+#define WREN 2
+#define GIE  7
+
+;---------------------
+; Program Inputs
+;---------------------
+EE_ADDRL equ    10h
+EE_ADDRH equ    11h
+EE_DATA  equ	12h
+
+ 
+;---------------------
+; MACRO DEFINITIONS
+;---------------------
+PSECT absdata,abs,ovrld        ; Do not change
+ 
+///// Defining the MACROS
+EE_RD  MACRO  _EE_ADDRLx
+ 
+; Data Memory Address to read from locatin 0x10 o EEPROM
+    BANKSEL NVMCON1
+    CLRF NVMCON1 ; Setup Data EEPROM Access
+
+    MOVLW   _EE_ADDRLx ;You can change the value in locatin 0x10 EEPROM manually
+    MOVWF NVMADRL ; Setup Address
+    BSF NVMCON1, RD ; Issue EE Read
+    MOVF NVMDAT, W ; W = EE_DATA 
+    NOP
+ENDM   
+    
+    
+EE_WRT  MACRO   
+; Data Memory Address to write
+    BANKSEL NVMCON1
+    CLRF NVMCON1 ; Setup Data EEPROM Access
+    MOVF EE_ADDRL, W ;
+    MOVWF NVMADRL ; Setup Address
+; Data Memory Value to write
+    MOVF EE_DATA, W ;
+    MOVWF NVMDAT ;
+; Enable writes
+    BSF NVMCON1, WREN 
+; Disable interrupts
+    BCF INTCON0, GIE ; -bitfield definitions
+; Required unlock sequence
+    MOVLW 0x55 ;
+    MOVWF NVMCON2 ;
+    MOVLW 0xAA ;
+    MOVWF NVMCON2 ;
+; Set WR bit to begin write
+    BSF NVMCON1, WR ; the value is copied to EEPROM
+; Enable INT
+    BSF INTCON0, GIE ;
+ENDM
+;---------------------
+; Main Program
+;---------------------
+    ORG          00H                ;Reset vector
+    GOTO        _main
+    
+_main:
+    ;Write oxAA into location 0x10 in EEPROM 
+    MOVLW   0x11  ; write into register 0x11
+    MOVWF   EE_ADDRL
+    MOVLW   0xAA  ; store the value
+    MOVWF   EE_DATA
+    EE_WRT  
+    nop
+    nop
+    EE_RD    0x12 ; read from register 0x12 in EEPROM
+    nop 
+    nop
+    
+END
+
+
+
+
