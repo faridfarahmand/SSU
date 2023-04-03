@@ -20,25 +20,27 @@
 // Example of Data types
 //---------------------------
 /* variable definition: */
-unsigned int a; 
-unsigned int b;
-unsigned int c;
-void main (void) {
-   /* actual initialization */
-   a = 0x2;
-   b = 0x3;
-   c = a + b;
-}
+//unsigned int a; 
+//unsigned int b;
+//unsigned int c;
+//void main (void) {
+//   /* actual initialization */
+//   a = 0x2;
+//   b = 0x3;
+//   c = a + b;
+//}
 
 //---------------------------
 // ****** Example 7-1
 //---------------------------
 // void main(void) {
+//     TRISD= 0b00000000;//sets PORTB as all outputs
+//     PORTD= 0b00000000;//turns off PORTB outputs so that the LED is initially off
 //     unsigned char z; 
-//     TRISB = 0; 
+//
 //     for(z=0; z<20; z++)
-//         PORTB = z;
-//     return; // or while(1)
+//         PORTD = z;
+//     while(1);
 // }
 
 
@@ -60,12 +62,12 @@ void main (void) {
 //---------------------------
 // void  MSDelay(unsigned int,unsigned int); // function declaration 
 // unsigned char outputValue; 
-
+//
 // #define SevenSeg PORTB // not need to have ; - als does not showup as a variable
 // #define mybit PORTBbits.RB7
-
+//
 // void main(void) {
-    
+//    
 //     asm("BANKSEL	PORTB") ;
 //     asm("CLRF	PORTB") ;       //Init PORTB
 //     asm("BANKSEL	LATB") ;    //Data Latch
@@ -75,7 +77,7 @@ void main (void) {
 //     asm("BANKSEL	TRISB") ;
 //     asm("MOVLW	0b00000000") ;
 //     asm("MOVWF	TRISB") ;
-
+//
 //     while(1) // run forever
 //     {
 //         outputValue = 0x55; 
@@ -86,8 +88,8 @@ void main (void) {
 //         MSDelay(25,165); 
 //     }     
 // } // end of main()
-
-// // function definition 
+//
+//// // function definition 
 // void  MSDelay(unsigned int itime1, unsigned int itime2)
 // {
 //     unsigned int i; unsigned int j;
