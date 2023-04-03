@@ -118,6 +118,7 @@ void main(void) {
 // ****** Example 7-x 
 // Writing into PM and RAM
 //---------------------------
+__EEPROM_DATA (0x00, 0x01);
 int variable_1 __at(0x60); // data memory location 0x200 
 volatile static unsigned int variable_2 __at(0x70); // write into RAM 
 
