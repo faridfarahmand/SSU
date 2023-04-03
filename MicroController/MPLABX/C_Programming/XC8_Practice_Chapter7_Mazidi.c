@@ -98,58 +98,58 @@ void main (void) {
 //---------------------------
 // ****** Example 7-13 
 //---------------------------
-#define myInput PORTBbits.RB5
-#define myOutput PORTBbits.RB0
-
-void main(void) {
-    
-    asm("BANKSEL	PORTB") ;
-    asm("CLRF	PORTB") ;       //Init PORTB
-    asm("BANKSEL	LATB") ;    //Data Latch
-    asm("CLRF	LATB") ;
-    asm("BANKSEL	ANSELB") ;
-    asm("CLRF	ANSELB") ;      //digital I/O
-    asm("BANKSEL	TRISB") ;
-    //asm("MOVLW	0b00000000") ;
-    //asm("MOVWF	TRISB") ;
-
-    TRISBbits.TRISB5 = 1;   // bit 5 is an input
-    TRISBbits.TRISB0 = 0;   // bit 0 is an output
-
-    while(1) // run forever
-    {
-        if (myInput == 1)
-            myOutput = 1;
-        else 
-            myOutput = 0;
-    }     
-} // end of main()
+//#define myInput PORTBbits.RB5
+//#define myOutput PORTBbits.RB0
+//
+//void main(void) {
+//    
+//    asm("BANKSEL	PORTB") ;
+//    asm("CLRF	PORTB") ;       //Init PORTB
+//    asm("BANKSEL	LATB") ;    //Data Latch
+//    asm("CLRF	LATB") ;
+//    asm("BANKSEL	ANSELB") ;
+//    asm("CLRF	ANSELB") ;      //digital I/O
+//    asm("BANKSEL	TRISB") ;
+//    //asm("MOVLW	0b00000000") ;
+//    //asm("MOVWF	TRISB") ;
+//
+//    TRISBbits.TRISB5 = 1;   // bit 5 is an input
+//    TRISBbits.TRISB0 = 0;   // bit 0 is an output
+//
+//    while(1) // run forever
+//    {
+//        if (myInput == 1)
+//            myOutput = 1;
+//        else 
+//            myOutput = 0;
+//    }     
+//} // end of main()
 
 //---------------------------
 // ****** Example 7-x 
 // Writing into PM and RAM
 //---------------------------
 
-int variable_1 __at(0x60); // data memory location 0x60 
-volatile static unsigned int variable_2 __at(0x70); // write into RAM 
-
-// place in the program memory (PM) - using constant qualifier 
-const char seg_code[] __at(0x100) = { 0x3f, 0x06, 0x5b };
-const char table[] __at(0x110) = { 0,1,2,3 }; 
-const char myText __at(0x120);
-
-__at(0x200A0) int main()
-{
-	
-	TRISD= 0b00000000;//sets PORTB as all outputs
-	PORTD= 0b00000000;//turns off PORTB outputs so that the LED is initially off
-	
-	variable_1 = 0xAA;
-	variable_2 = 0xBB;
-	variable_3 = 0xCC;
-	TRISD = 0;
-	while(1) 
-	{
-   		variable_1++;
-	}
-}
+//int variable_1 __at(0x60); // data memory location 0x60 
+//volatile static unsigned int variable_2 __at(0x70); // write into RAM 
+//
+//// place in the program memory (PM) - using constant qualifier 
+//const char seg_code[] __at(0x100) = { 0x3f, 0x06, 0x5b };
+//const char table[] __at(0x110) = { 0,1,2,3 }; 
+//const char myText __at(0x120);
+//
+//__at(0x200A0) int main()
+//{
+//	
+//	TRISD= 0b00000000;//sets PORTB as all outputs
+//	PORTD= 0b00000000;//turns off PORTB outputs so that the LED is initially off
+//	
+//	variable_1 = 0xAA;
+//	variable_2 = 0xBB;
+//
+//	TRISD = 0;
+//	while(1) 
+//	{
+//   		variable_1++;
+//	}
+//}
