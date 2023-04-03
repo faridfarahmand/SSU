@@ -118,8 +118,8 @@ void main(void) {
 // ****** Example 7-x 
 // Writing into PM and RAM
 //---------------------------
-__EEPROM_DATA (0x00, 0x01);
-int variable_1 __at(0x60); // data memory location 0x200 
+
+int variable_1 __at(0x60); // data memory location 0x60 
 volatile static unsigned int variable_2 __at(0x70); // write into RAM 
 
 // place in the program memory (PM) - using constant qualifier 
@@ -129,12 +129,16 @@ const char myText __at(0x120);
 
 __at(0x200A0) int main()
 {
+	
+	TRISD= 0b00000000;//sets PORTB as all outputs
+	PORTD= 0b00000000;//turns off PORTB outputs so that the LED is initially off
+	
 	variable_1 = 0xAA;
 	variable_2 = 0xBB;
 	variable_3 = 0xCC;
 	TRISD = 0;
 	while(1) 
 	{
-   		PORTbits.RD0 = ON;
+   		variable_1++;
 	}
 }
