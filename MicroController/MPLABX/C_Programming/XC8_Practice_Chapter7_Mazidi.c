@@ -1,9 +1,26 @@
-#include <xc.h>
+
 //****************************************
 // Practicing with examples in Chapter 7
 // PIC MICROCONTROLLER AND EMBEDDED SYSTEMS Using Assembly and C for PIC18
 // by Muhammad Ali Mazidi - starting page 254 (PDF)
 //****************************************
+#include <xc.h> // must have this
+#include "ConfigFile.h"   // you can remove this if you already have the config bits setup in the file 
+// file is avaailable: 
+
+//#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
+#include "C:/Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
+//#include "C:\Program Files\Microchip\xc8\v2.40\pic\include\proc\pic18f46k42"
+
+
+
+#define _XTAL_FREQ 4000000                 // Fosc  frequency for _delay()  library
+#define FCY    _XTAL_FREQ/4
+
+
+
+
+
 
 // ****** Example 7-0
 // Example of Data types
