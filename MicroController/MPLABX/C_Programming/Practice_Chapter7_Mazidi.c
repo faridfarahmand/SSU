@@ -5,7 +5,19 @@
 // by Muhammad Ali Mazidi - starting page 254 (PDF)
 //****************************************
 
-
+// ****** Example 7-0
+// Example of Data types
+//---------------------------
+/* variable definition: */
+unsigned int a; 
+unsigned int b;
+unsigned int c;
+void main (void) {
+   /* actual initialization */
+   a = 0x2;
+   b = 0x3;
+   c = a + b;
+}
 
 //---------------------------
 // ****** Example 7-1
