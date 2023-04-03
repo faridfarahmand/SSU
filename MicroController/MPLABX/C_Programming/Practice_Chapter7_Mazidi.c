@@ -113,3 +113,27 @@ void main(void) {
             myOutput = 0;
     }     
 } // end of main()
+
+//---------------------------
+// ****** Example 7-x 
+// Writing into PM and RAM
+//---------------------------
+int variable_1 __at(0x60); // data memory location 0x200 
+volatile static unsigned int variable_2 __at(0x70); // write into RAM 
+
+// place in the program memory (PM) - using constant qualifier 
+const char seg_code[] __at(0x100) = { 0x3f, 0x06, 0x5b };
+const char table[] __at(0x110) = { 0,1,2,3 }; 
+const char myText __at(0x120);
+
+__at(0x200A0) int main()
+{
+	variable_1 = 0xAA;
+	variable_2 = 0xBB;
+	variable_3 = 0xCC;
+	TRISD = 0;
+	while(1) 
+	{
+   		PORTbits.RD0 = ON;
+	}
+}
