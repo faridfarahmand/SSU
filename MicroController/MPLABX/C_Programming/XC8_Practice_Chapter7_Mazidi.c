@@ -12,7 +12,7 @@
 // file is avaailable: https://github.com/faridfarahmand/SSU/blob/main/MicroController/MPLABX/C_Programming/XC8_ConfigFile.h 
 
 //#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
-#include "C:/Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
+#include "C:/Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h" // you may not need it
 
 #define _XTAL_FREQ 4000000                 // Fosc  frequency for _delay()  library
 #define FCY    _XTAL_FREQ/4
@@ -43,7 +43,7 @@
 //
 //     for(z=0; z<20; z++)
 //         PORTD = z;
-//     while(1);
+//     while(1);  // this makes the program loop here on its own - (1) indicates if TRUE
 // }
 
 
@@ -66,12 +66,13 @@
 // void  MSDelay(unsigned int,unsigned int); // function declaration 
 // unsigned char outputValue; 
 //
-// #define SevenSeg PORTB // not need to have ; - als does not showup as a variable
+// #define SevenSeg PORTB // reminder: also does not show up as a variable
 // #define mybit PORTBbits.RB7
 //
 // void main(void) {
 //    
-//     asm("BANKSEL	PORTB") ;
+
+//     asm("BANKSEL	PORTB") ; // This is not a standard approach! Try not to mix assembly and C
 //     asm("CLRF	PORTB") ;       //Init PORTB
 //     asm("BANKSEL	LATB") ;    //Data Latch
 //     asm("CLRF	LATB") ;
@@ -217,7 +218,7 @@
 //       data1 = Get7Seg(i);
 //       PORTB = data1;
 //    }
-//    while(1);
+//    while(1); // stop here!
 //    
 //}
 
@@ -238,7 +239,7 @@
 //      value1 = rand();
 //      value2 = 10*(float)value1/32767; // return integer
 //      LATB = value2;
-//      //printf("Today's lucky number is %d\n", value); // lots of memory usage
+//      //printf("Today's lucky number is %d\n", value); // lots of memory usage if uncommented
 //    }
 //}
 
