@@ -5,6 +5,9 @@
 // by Muhammad Ali Mazidi - starting page 254 (PDF)
 //****************************************
 #include <xc.h> // must have this
+#include <stdio.h> 
+#include <stdlib.h>
+#include <math.h>
 #include "ConfigFile.h"   // you can remove this if you already have the config bits setup in the file 
 // file is avaailable: https://github.com/faridfarahmand/SSU/blob/main/MicroController/MPLABX/C_Programming/XC8_ConfigFile.h 
 
@@ -128,7 +131,7 @@
 //} // end of main()
 
 //---------------------------
-// ****** Example 7-x 
+// ****** Example 7-x1 
 // Writing into PM and RAM
 //---------------------------
 
@@ -155,3 +158,105 @@
 //   		variable_1++;
 //	}
 //}
+
+//---------------------------
+// ****** Example 7-x2 
+// Generate a Random Number when a switch is pressed
+//---------------------------
+//unsigned char seed; 
+//void main (void) 
+//{
+//    // PORTB is OUTPUT
+//    PORTB = 0; LATB=0; ANSELB = 0;  TRISB=0;
+// 
+//    // PORTD.RD0 is input
+//    PORTD = 0; LATD=0; ANSELD = 0; 
+//    TRISDbits.TRISD0 = 1;   // bit 0 is an input
+//    
+//    seed = 1; 
+//    while(1)
+//    {
+//        while (PORTDbits.RD0==0) // radom number is generated
+//        {
+//            seed++;
+//            if (seed == 7)
+//                seed = 1;
+//            PORTB = seed;
+//        }
+//    }
+//    
+//}
+
+//---------------------------
+// ****** Example 7-x3 
+//Increment numbers on 7Segment Display
+//--------------------------
+
+// program memory
+//const char lookUp7Seg[] __at(0x100) = { 0x3f, 0x06, 0x5b, 0x5b, 0x4f, 0x66,
+//                                        0x6d, 0x7d, 0x07, 0x7f, 0x6f }; 
+//
+//// data memory 
+//char data1; 
+//// function Get7Seg
+//char Get7Seg (char bcd) 
+//{
+//    if (bcd<=9)
+//        return lookUp7Seg[bcd];
+//    else
+//        return 0;
+//}
+//// main program
+//void main (void) 
+//{
+//    // PORTB is OUTPUT
+//    PORTB = 0; LATB=0; ANSELB = 0;  TRISB=0; 
+//    unsigned char i;
+//    for (i=0; i<10; i++)
+//    {
+//       data1 = Get7Seg(i);
+//       PORTB = data1;
+//    }
+//    while(1);
+//    
+//}
+
+//---------------------------
+// ****** Example 7-x4 
+//Available functions in stdlib.h
+//-------------------------- 
+//
+//#include <stdio.h> 
+//#include <stdlib.h>
+//#include <math.h>
+//
+//void main (void)
+//{
+//   int value1; int value2;
+//   for (int i=0; i<10; i++)
+//    {
+//      value1 = rand();
+//      value2 = 10*(float)value1/32767; // return integer
+//      LATB = value2;
+//      //printf("Today's lucky number is %d\n", value); // lots of memory usage
+//    }
+//}
+
+//---------------------------
+// ****** Example 7-x5 
+//Available functions in string.h
+//-------------------------- 
+
+// program memory
+//#include <string.h>
+//#include <stdio.h>
+//
+//int main(void)
+//{
+//  char buf1[50]  = {"PIC18 is Amazing!"}; // places in RAM starting reg 0x90
+//  char buf2[50] = {"The IDE or the Chip?"};// places in RAM starting reg 0x00
+//
+//  strcpy(buf1, buf2); // function in string.h library
+//  LATB = 1; // just for fun
+//}
+
