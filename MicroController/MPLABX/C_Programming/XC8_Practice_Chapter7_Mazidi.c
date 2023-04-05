@@ -261,3 +261,51 @@
 //  LATB = 1; // just for fun
 //}
 
+
+//---------------------------
+// ****** Example 7-x6
+//Solving Math Expressions
+//-------------------------- 
+//#include <stdio.h> 
+//#include <stdlib.h>
+//#include <math.h> 
+//
+//float Fr[10];
+//float L=1.0e-3;
+//float C=1.0e-6;
+//float mysqrtbuff;
+//
+//// Calculating the resonant frequency = 1/(2pi * sqrt (L * C))
+//void main (void) 
+//{
+//    int a; 
+//    for (a=0; a<10; a++)
+//    {
+//        Fr[a] = 1/(6.2831853 * sqrt(L*C));
+//        L += 1.e-6; // starting with 1 mH to 10 mH 
+//    }
+//}
+
+//---------------------------
+// ****** Example 7-x7
+// Usage of strlen() 
+//-------------------------- 
+//#include <string.h>
+//#include <stdio.h>
+//char buffer[] = "Programming PIC 18 is Fun! ";
+//unsigned int testChar __at(0x120); // number of digits in the string 
+//char lenghtBuffer __at(0x100); // length of the string 
+//char myChar __at(0x110); // actual digits in the string
+//int a; 
+//void main (void)
+//{
+//    lenghtBuffer = strlen(buffer); // store the length = 27 or 0x1B @0x100
+//    for (a=0; a<strlen(buffer); a++)
+//    {
+//        if (buffer[a] >= '0' && buffer[a] <= '9' )
+//        {
+//            myChar = buffer[a]; //display character in the string
+//            testChar++; // count the number of numbers in the string
+//        }
+//    }
+//} 
