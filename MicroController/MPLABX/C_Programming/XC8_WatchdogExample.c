@@ -44,7 +44,7 @@
 
 // CONFIG3H
 #pragma config WDTCWS = WDTCWS_7// WDT Window Select bits (window always open (100%); software control; keyed access not required)
-#pragma config WDTCCS = SC      // WDT input clock selector (Software Control)
+#pragma config WDTCCS = SC      // WDT input clock selector (Software Control) - 31KHz
 
 // CONFIG4L
 #pragma config BBSIZE = BBSIZE_512// Boot Block Size selection bits (Boot Block size is 512 words)
@@ -74,7 +74,7 @@
 #define PORTD_DIR TRISD
 #define OUTPUT  0
 
-unsigned int count; 
+unsigned int count;
     
 void Dummy_Stuck(void);
 
@@ -84,19 +84,21 @@ void main(void) {
     ANSELD = 0b00000000;
     PORTD_DIR = OUTPUT;
     PORTD = 0b00000000; //turns off PORTB outputs so that the LED is initially off
-
+    
+    WDTCON0 = 0b00011011;  // This changes the watchdog timer value - refer to data sheet
+    
     __delay_ms(1000);        /* initial delay */
     count = 0;
     BlinkLED = 0; 
     WdtLED = 0;
     while(1)
     {
-        BlinkLED = ~BlinkLED;             /* Toggle LED */
-        __delay_ms(100);  
+        BlinkLED = !BlinkLED;             /* Toggle LED */
+        __delay_ms(100);
         //asm("CLRWDT");               /* Clear Watchdog Timer */
-        //CLRWDT();
+        CLRWDT();
         count++;
-        if(count>20) {
+        if(count>5) {
             WdtLED = 1;             /* Stay high indicating system is idle */
             Dummy_Stuck();      /* Dummy Stuck loop function */
         }
