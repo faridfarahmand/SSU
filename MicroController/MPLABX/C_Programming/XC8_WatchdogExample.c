@@ -40,7 +40,7 @@
 
 // CONFIG3L  ******* FOR WATCHDOG ********
 #pragma config WDTCPS = WDTCPS_31// WDT Period selection bits (Divider ratio 1:65536; software control of WDTPS)
-#pragma config WDTE = OFF       // WDT operating mode (WDT Disabled; SWDTEN is ignored)
+#pragma config WDTE = ON       // WDT operating mode (WDT Disabled; SWDTEN is ignored)
 
 // CONFIG3H
 #pragma config WDTCWS = WDTCWS_7// WDT Window Select bits (window always open (100%); software control; keyed access not required)
@@ -63,7 +63,7 @@
 #pragma config CP = OFF         // PFM and Data EEPROM Code Protection bit (PFM and Data EEPROM code protection disabled)
 
 #include <xc.h> // must have this
-//#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
+#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
 //#include "C:\Program Files\Microchip\xc8\v2.40\pic\include\proc\pic18f46k42"
 
 #define _XTAL_FREQ 4000000                 // Fosc  frequency for _delay()  library
@@ -71,30 +71,35 @@
 
 #define BlinkLED  PORTDbits.RD0
 #define WdtLED  PORTDbits.RD1
+#define PORTD_DIR TRISD
+#define OUTPUT  0
+
+unsigned int count; 
+    
 void Dummy_Stuck(void);
 
 void main(void) {
 
     // Initialization  
     ANSELD = 0b00000000;
-    TRISD = 0b00000000; //sets PORTD as all outputs 
+    PORTD_DIR = OUTPUT;
     PORTD = 0b00000000; //turns off PORTB outputs so that the LED is initially off
 
-    
-    int count;
     __delay_ms(1000);        /* initial delay */
     count = 0;
     BlinkLED = 0; 
     WdtLED = 0;
     while(1)
     {
-        BlinkLED = !BlinkLED;             /* Toggle LED */
-        __delay_ms(100);              
-        CLRWDT();               /* Clear Watchdog Timer */
+        BlinkLED = ~BlinkLED;             /* Toggle LED */
+        __delay_ms(100);  
+        //asm("CLRWDT");               /* Clear Watchdog Timer */
+        //CLRWDT();
         count++;
-        if(count>20)
+        if(count>20) {
             WdtLED = 1;             /* Stay high indicating system is idle */
             Dummy_Stuck();      /* Dummy Stuck loop function */
+        }
     }
 }
 
