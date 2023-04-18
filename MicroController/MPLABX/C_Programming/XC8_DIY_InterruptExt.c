@@ -72,55 +72,37 @@
 // Defining Interrupt ISR 
 void __interrupt(irq(IRQ_INT0),base(0x4008)) INT0_ISR(void)
 {
-        if (PIR1bits.INT0IF == 1) { // Check if interrupt flag occurred 
+        // Check if interrupt flag for INT0 is set to 1 
             // if so, do something
-            for (int k = 0; k < 10; k++) {
-                PORTDbits.RD0 = !PORTDbits.RD0; //toggle pin 19 (INT01)
-                __delay_ms(250);
-            }
-            PIR1bits.INT0IF = 0;  // always clear the interrupt flag when done
-            PORTDbits.RD0=0;      // turn off the pin
-    }
+                // e.g,blink an LED fast for 10 times 
+        // always clear the interrupt flag for INT0 when done
+        // turn off the led
 }
 
-void __interrupt(irq(default), base(0x4008)) DEFAULT_ISR(void)
-{
-        // Unhandled interrupts go here
-}
 void INTERRUPT_Initialize (void)
 {
-    INTCON0bits.IPEN = 1; // Enable interrupt priority
-    INTCON0bits.GIEH = 1; // Enable high priority interrupts
-    INTCON0bits.GIEL = 1; // Enable low priority interrupts
-    INTCON0bits.INT0EDG = 1; // Interrupt on rising edge of INT1 pin
-    IPR1bits.INT0IP = 1; // high priority
-    PIE1bits.INT0IE = 1;
+    // Enable interrupt priority bit in INTCON0
+    // Enable high priority interrupts using bits in INTCON0
+    // Enable low priority interrupts using bits in INTCON0
+    // Interrupt on rising edge of INT0 pin using bits in INTCON0
+    // Set the interrup high priority (IP) for INT0
+    // Enable the interrup (II) for INT0
 
-    PIR1bits.INT0IF = 0;  //Clear interrupt flag
+    //Clear interrupt flag for INT01
   
     // Change IVTBASE if required
-    IVTBASEU = 0x00; // Optional
-    IVTBASEH = 0x40; // Default is 0x0008
-    IVTBASEL = 0x08; 
+    //Set IVTBASEU to 0x00 
+    // Set IVTBASEH to  0x40; 
+    // Set IVTBASEL to 0x08; 
 }
 void main(void) {
 
     // Initialization  
-    ANSELD = 0b00000000;
-    TRISD = 0b00000000; //sets PORTD as all outputs 
-    PORTD = 0b00000000; //turns off PORTB outputs so that the LED is initially off
-    ANSELB = 0b00000000;
-    TRISB = 0b00000001; //sets PORTB.RB0 as input / INT01
-    PORTB = 0b00000000; //turns off PORTD outputs 
+    // set port B and D as outputs 
 
-    WPUB=0xFF;          // weak pull-ups are enabled for port B
+    // initialize the interrupts 
 
-    INTERRUPT_Initialize();
     // main code here 
-    while (1) {
-        asm("NOP");
-        PORTDbits.RD1 = !PORTDbits.RD1 ; // toggle - pin 20
-        __delay_ms(2000); // very long delay
-    }
+        // blink an LED every 2 seconds
 }
 
