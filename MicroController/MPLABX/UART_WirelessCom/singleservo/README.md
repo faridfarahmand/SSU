@@ -1,0 +1,1 @@
+Singleservo file contains the following code: header file and main code. In this project using data sheet for PIC18F46k42,Pulse Width Modulation. This header file setups the PWM timer 2, duty value, period and output. The main code sweeps the Pulse width from 500us to 2500us. The output is connected to RC1 which you would connect one servo to it. 

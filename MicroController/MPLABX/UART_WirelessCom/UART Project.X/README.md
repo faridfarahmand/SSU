@@ -1,0 +1,4 @@
+The UART Project contains the following files: mcc_generated_files, configFile.h, and UART-BLE.c. This setup is interfaces with 'Bluetooth 4.0 Transceiver BLE Module Serial Port CC2541 HM-10 MLT-BT05'. Used MCC Generator tool on PIC18f46k42 MPLAB X IDE XC8 v6.05 to set up the UART module with the BLE module. The Tx(Transmitter) is connected to RC7 GPIO of PIC,while the Rx(Receiver) is connected to RC6 GPIO of PIC. The terminal used in this project is 'BLE Terminal' from APP STORE on macOS Catalina Version 10.15. The purpose of this project is to send the lowercase characters: "b,o,t,f" to either to either turn on individual LED or both LEDs aswell as turn all off, LED's are connected to RD0 and RD1 GPIO of PIC. 
+
+
+<img width="655" alt="Screen Shot 2023-08-02 at 5 08 59 PM" src="https://github.com/gomez-b/SSUSummer-2023/assets/140544273/47da1bdd-c251-4969-ae3a-9be90f955ac6">
