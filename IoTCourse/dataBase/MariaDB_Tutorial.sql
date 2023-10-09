@@ -11,6 +11,8 @@ SHOW DATABASES;
 USE id19686307_myfirstdbase;
 
 -- Example of table with constraint
+-- NOTE: A MySQL database can have tables that do not have a primary key (such as the case below), 
+--      but it's generally not recommended.
 CREATE TABLE t2 (name VARCHAR(30) CHECK (CHAR_LENGTH(name)>2), start_date DATE, 
   end_date DATE CHECK (start_date IS NULL OR end_date IS NULL OR start_date<end_date));
 INSERT INTO t2(name, start_date, end_date) VALUES('Ione', '2003-12-15', '2014-11-09');
