@@ -1,17 +1,17 @@
 ;---------------------
 ; Title: Generate a waveform when the switch is pressed
 ;---------------------
-;Program Details:
-; The purpose of this program is to generate a waveform when a switch pressed. 
+; Program Details:
+; The purpose of this program is to generate a waveform when a switch is pressed. 
 ;   When the input port is HIGH no waveform is generated. When RD1 is LOW 
 ;   a waveform is generated. The frequency of the waveform is controlled 
 ;   by the values of the Inner_loop and Outer_loop
-;   In this example we utilize teh CALL /RETURN concepts
+;   In this example, we utilize the CALL /RETURN concepts
     
     
 ; Inputs: Inner_loop ,Outer_loop, RD1 (input)
 ; Outputs: RD0 (output)
-; Setup: The Curiocity Board
+; Setup: The Curiosity Board
     
 ; Date: Feb 24, 2024
 ; File Dependencies / Libraries: It is required to include the 
