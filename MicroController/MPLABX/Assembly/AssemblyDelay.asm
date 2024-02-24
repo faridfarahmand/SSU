@@ -1,13 +1,12 @@
 ;---------------------
 ; Title: Waveform Generator with Delay
 ;---------------------
-;Program Details:
-; The purpose of this program is to load two bytes, Byte1 (F2H) and Byte2 (22H), in data registers REG0 and ; REG1, respectively and add the bytes.
-; If the sum generates a carry, clear the data register REG2; otherwise, save the sum in REG2.
+; Program Details:
+; The purpose of this program is to demonstrate how to call a delay function. 
 
 ; Inputs: Inner_loop ,Outer_loop 
 ; Outputs: PORTD
-; Date: Feb 24, 2023
+; Date: Feb 24, 2024
 ; File Dependencies / Libraries: None 
 ; Compiler: xc8, 2.4
 ; Author: Farid Farahmand
