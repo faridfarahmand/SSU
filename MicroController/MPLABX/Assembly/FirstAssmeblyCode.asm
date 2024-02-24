@@ -1,7 +1,7 @@
 ;---------------------
 ; Title: ADD TWO BYTES
 ;---------------------
-;Program Details:
+; Program Details:
 ; The purpose of this program is to load two bytes, Byte1 (F2H) and Byte2 (02H), in data registers REG0 
 ; The program may contain logical errors and should be debugged. Follow the comments and correct the errors
 
@@ -9,7 +9,7 @@
 ; Read This:
 ;-------
 ; You may need to change the path for the AssemblyConfig.inc; this file contains all the configuration bits
-; To simulate go to Windows tab, then Target Memory View--> File Registers and view teh registers
+; To simulate go to the Windows tab, then Target Memory View--> File Registers and view the registers
 
 		
 ; Inputs: Byte 1 and Byte 2
