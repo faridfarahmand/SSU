@@ -19,9 +19,11 @@
 
 
 ;---------------------
-; Initialization
+; Initialization - make sure the path is correct
 ;---------------------
 #include ".\AssemblyConfig.inc"
+;#include "C:\Users\student\Documents\myMPLABXProjects\ProjectFirstAssemblyMPLAB\FirstAssemblyMPLAB.X\AssemblyConfig.inc"
+
 #include <xc.inc>
 
 ;---------------------
