@@ -21,7 +21,7 @@
 ;---------------------
 ; Initialization
 ;---------------------
-#include "./AssemblyConfig.inc"
+#include ".\AssemblyConfig.inc"
 #include <xc.inc>
 
 ;---------------------
