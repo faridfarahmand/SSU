@@ -28,7 +28,7 @@
 ;---------------------
 ; Initialization
 ;---------------------
-#include "AssemblyConfig.inc"
+#include "./myConfigFile.inc"
 #include <xc.inc>
 
 ;---------------------
@@ -48,6 +48,7 @@ REG11   equ     11h
 ;---------------------
 #define SWITCH    PORTD,1  
 #define LED0      PORTD,0
+#define LED1      PORTB,0
    
 ;---------------------
 ; Main Program
@@ -60,21 +61,14 @@ REG11   equ     11h
     ORG          0020H           ; Begin assembly at 0020H
  
 _initialization: 
-    BANKSEL	PORTD ;
-    CLRF	PORTD ;Init PORTA
-    BANKSEL	LATD ;Data Latch
-    CLRF	LATD ;
-    BANKSEL	ANSELD ;
-    CLRF	ANSELD ;digital I/O
-    BANKSEL	TRISD ;
-    MOVLW	0b11111110 ;Set RD[7:1] as inputs
-    MOVWF	TRISD ;and set RD0 as ouput
-
+    RCALL _setupPortD
+    RCALL _setupPortB
     
 _main:
     ;BTFSC	SWITCH  ; By removing these two lines the input has no impact
     ;BRA	_main
     BTG		LED0
+    BTG		LED1
     CALL	loopDelay ; we can use RCALL
     BRA         _main
     
@@ -90,5 +84,31 @@ _loop1:
     DECF        REG11,1 // outer loop
     BNZ        _loop1
     RETURN
+ 
+_setupPortD:
+    BANKSEL	PORTD ;
+    CLRF	PORTD ;Init PORTA
+    BANKSEL	LATD ;Data Latch
+    CLRF	LATD ;
+    BANKSEL	ANSELD ;
+    CLRF	ANSELD ;digital I/O
+    BANKSEL	TRISD ;
+    MOVLW	0b11111110 ;Set RD[7:1] as inputs
+    MOVWF	TRISD ;and set RD0 as ouput
+    RETURN
+ 
+_setupPortB:
+    BANKSEL	PORTB ;
+    CLRF	PORTB ;Init PORTA
+    BANKSEL	LATB ;Data Latch
+    CLRF	LATB ;
+    BANKSEL	ANSELB ;
+    CLRF	ANSELB ;digital I/O
+    BANKSEL	TRISB ;
+    MOVLW	0b11111110 ;Set RD[7:1] as inputs
+    MOVWF	TRISB ;and set RD0 as ouput
+    RETURN    
     
     END
+
+
