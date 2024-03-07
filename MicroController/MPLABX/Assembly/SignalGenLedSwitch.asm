@@ -81,9 +81,14 @@ loopDelay:
 _loop1:
     DECF        REG10,1
     BNZ         _loop1
+    MOVLW       Inner_loop ; Re-initialize the inner loop for when the outer loop decrements.
+    MOVWF       REG10
     DECF        REG11,1 // outer loop
     BNZ        _loop1
+     
+    BRA         _onoff
     RETURN
+
  
 _setupPortD:
     BANKSEL	PORTD ;
