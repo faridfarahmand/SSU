@@ -85,8 +85,6 @@ _loop1:
     MOVWF       REG10
     DECF        REG11,1 // outer loop
     BNZ        _loop1
-     
-    BRA         _onoff
     RETURN
 
  
