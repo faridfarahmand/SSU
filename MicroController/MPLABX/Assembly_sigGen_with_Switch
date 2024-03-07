@@ -79,6 +79,8 @@ _onoff:
 _loop1:
     DECF        REG10,1
     BNZ         _loop1
+    MOVLW       Inner_loop
+    MOVWF       REG10
     DECF        REG11,1 // outer loop
     BNZ        _loop1
      
