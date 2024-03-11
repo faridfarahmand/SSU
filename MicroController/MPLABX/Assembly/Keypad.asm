@@ -16,7 +16,7 @@
 ; Compiler: xc8, 2.4
 ; Author: Farid Farahmand
 ; Versions:
-;       V1.0: The keypad file for a differnt PIC has been modified to fit PIC18F46K42
+;       V1.0: Original
 ; Useful links:
 ; Keypad: https://www.circuitbasics.com/how-to-set-up-a-keypad-on-an-arduino/ 
 
@@ -34,7 +34,13 @@
 ;---------------------
 ; Program Constants
 ;---------------------
-what_button equ  20h
+what_button EQU		20h
+BYTE01	EQU		0xF2		;Data bytes
+BYTE02	EQU		0x32
+REG00	EQU		0x00		;Data Register addresses
+REG01	EQU		0x01
+REG02	EQU		0x02
+REG10	EQU		0x10
 
 ;---------------------
 ; Definitions
@@ -63,6 +69,11 @@ _setup:
 _main:
     RCALL _check_keypad
     MOVFF   what_button,PORTD
+    
+;    MOVLW	0xAA
+;    MOVWF	REG10
+;    BYTE	0x10
+    
     GOTO    _main
 
 
@@ -94,7 +105,7 @@ _setupPortB:
     RETURN
 
 _check_keypad:
-    movf what_button, w			;	we want to copy our last digit that was pressed into w
+    movf what_button, w			
 
     bsf PORTB, 0			;	lets scan the first column of keys
     btfsc PORTB, 3			;	has the 1 key been pressed? if yes then
@@ -132,4 +143,9 @@ _check_keypad:
     movwf what_button	
 return						
 
+BYTE	MACRO	REGXX
+    LFSR	FSR1,REGXX
+    MOVFF	POSTDEC1,REG00
+    MOVFF	INDF1,REG00
+ENDM
     END
