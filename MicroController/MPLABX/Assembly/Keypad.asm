@@ -48,10 +48,19 @@ REG10	EQU		0x10
 
 
 ;---------------------
+; MACROS
+;---------------------
+   PSECT absdata,abs,ovrld        ; Do not change
+
+BYTE	MACRO	REGXX
+    LFSR	1,REGXX
+    MOVFF	POSTDEC1,REG00
+    MOVFF	INDF1,REG00
+ENDM
+
+;---------------------
 ; Main Program
 ;---------------------
-    PSECT absdata,abs,ovrld        ; Do not change
-
     ORG          0                ;Reset vector
     GOTO        _setup
 
@@ -143,9 +152,4 @@ _check_keypad:
     movwf what_button	
 return						
 
-BYTE	MACRO	REGXX
-    LFSR	FSR1,REGXX
-    MOVFF	POSTDEC1,REG00
-    MOVFF	INDF1,REG00
-ENDM
     END
