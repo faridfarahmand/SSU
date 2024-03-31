@@ -1,6 +1,6 @@
 ###################################################
-Purpose: The purpose of this code is to illumintate 
-the RGB on the CubeCell module.
+# Purpose: The purpose of this code is to illumintate 
+# the RGB on the CubeCell module.
 ###################################################
 
 #include "CubeCell_NeoPixel.h"
