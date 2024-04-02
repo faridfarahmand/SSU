@@ -306,13 +306,73 @@
 //            testChar++; // count the number of numbers in the string
 //        }
 //    }
-//} 
+//}
 
+//---------------------------
+// ****** Example 7-x8
+// Reading and writing from and into EEPROM
+//-------------------------- 
+// EEPROM address must start from ox310000
+ const unsigned int abc3 __at(0x310000) = 0x5566;
+ const char seg_code[] __at(0x310030) = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07};
+ const char table[] __at(0x310040) = {0,1,2,3,4};
 
+ // Must write into an entire block. Must be done at the initialization. 
 __EEPROM_DATA (0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07);
-__EEPROM_DATA(0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F);
-void main (void)
+__EEPROM_DATA (0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F);
+__EEPROM_DATA (0x08,0x09,0x00,0x00,0x00,0x00,0x00,0x00);
+
+
+__at(0x10) int x; // define x at register 0x10 RAM (two bytes)
+__at(0x14) int y; // define y at register 0x14 RAM (two bytes)
+volatile static unsigned int variable_2 __at(0x20);
+volatile char variable_3 __attribute__((address (0x230)));
+
+
+uint8_t DATAEE_ReadByte(uint16_t bAdd)
+{
+    NVMADRH = (uint8_t)((bAdd >> 8) & 0x03);
+    NVMADRL = (uint8_t)(bAdd & 0xFF);
+    NVMCON1bits.NVMREG = 0;
+    NVMCON1bits.RD = 1;
+    NOP();  // NOPs may be required for latency at high frequencies
+    NOP();
+
+    return (NVMDAT);
+}
+
+void DATAEE_WriteByte(uint16_t bAdd, uint8_t bData)
+{
+    uint8_t GIEBitValue = INTCON0bits.GIE;
+
+    NVMADRH = (uint8_t)((bAdd >> 8) & 0x03);
+    NVMADRL = (uint8_t)(bAdd & 0xFF);
+    NVMDAT = bData;
+    NVMCON1bits.NVMREG = 0;
+    NVMCON1bits.WREN = 1;
+    INTCON0bits.GIE = 0;     // Disable interrupts
+    NVMCON2 = 0x55;
+    NVMCON2 = 0xAA;
+    NVMCON1bits.WR = 1;
+    // Wait for write to complete
+    while (NVMCON1bits.WR)
+    {
+    }
+
+    NVMCON1bits.WREN = 0;
+    INTCON0bits.GIE = GIEBitValue;   // restore interrupt enable
+}
+
+void __at(0x20) main (void)// program starts from location 0x20 in the FLASH
 {
     PORTB=1;
+    y = abc3+1; // cannot read form EEROM directly this way! 
+    x=0x3456; // change the value of x -  // placed in register 0x10 of RAM
+    variable_2=12;  // placed in register 0x20of RAM
+    variable_3=0xAB; // placed in register 0x230 of RAM
+
+    DATAEE_WriteByte(0x02,0xFA);// write the value 0xFA in location 0x02 of EEPROM
+    y=DATAEE_ReadByte(0x02); // read the value in location 0x2 of EEPROM
+    y=y+1; 
 }
 
