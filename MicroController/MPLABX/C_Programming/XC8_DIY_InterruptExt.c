@@ -1,6 +1,6 @@
 /*
- * The purpose of this program is demonstrate INT01 as an external interrupt. 
- * In this case when the signal changes state on RB0(INT01) then D0 starts 
+ * The purpose of this program is demonstrate INT0 as an external interrupt. 
+ * In this case when the signal changes state on RB0 (INT0) then D0 starts 
  * blinking for 4 seconds and then stops. The results can be simulated and
  * verified.  
  * 
@@ -72,26 +72,26 @@
 // Defining Interrupt ISR 
 void __interrupt(irq(IRQ_INT0),base(0x4008)) INT0_ISR(void)
 {
-        // Check if interrupt flag for INT0 is set to 1 
+        // Check if interrupt flag for INT0 is set to 1 - (note INT0 is your input)
             // if so, do something
-                // e.g,blink an LED fast for 10 times 
+                // e.g,blink an LED connected to  PORTDbits.RD0 for 10 times with a delay of __delay_ms(250)
         // always clear the interrupt flag for INT0 when done
-        // turn off the led
+        // turn off the led on PORTDbits.RD0 
 }
 
 void INTERRUPT_Initialize (void)
 {
-    // Enable interrupt priority bit in INTCON0
+    // Enable interrupt priority bit in INTCON0 (check INTCON0 register and find the bit)
     // Enable high priority interrupts using bits in INTCON0
     // Enable low priority interrupts using bits in INTCON0
     // Interrupt on rising edge of INT0 pin using bits in INTCON0
-    // Set the interrup high priority (IP) for INT0
-    // Enable the interrup (II) for INT0
+    // Set the interrup high priority (IP) for INT0 - INT0IP
+    // Enable the interrup (IE) for INT0
 
     //Clear interrupt flag for INT01
   
-    // Change IVTBASE if required
-    //Set IVTBASEU to 0x00 
+    // Change IVTBASE by doign the following
+    // Set IVTBASEU to 0x00 
     // Set IVTBASEH to  0x40; 
     // Set IVTBASEL to 0x08; 
 }
@@ -100,9 +100,11 @@ void main(void) {
     // Initialization  
     // set port B and D as outputs 
 
-    // initialize the interrupts 
+    // enable the weak pull-ups are enabled for port B
+
+    // initialize the interrupt_initialization by calling the proper function
 
     // main code here 
-        // blink an LED every 2 seconds
+        // blink an LED connected to RD1 every 2 seconds
 }
 
