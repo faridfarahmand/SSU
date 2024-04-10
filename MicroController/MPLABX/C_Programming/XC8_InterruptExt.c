@@ -1,6 +1,6 @@
 /*
- * The purpose of this program is demonstrate INT01 as an external interrupt. 
- * In this case when the signal changes state on RB0(INT01) then D0 starts 
+ * The purpose of this program is demonstrate INT0 as an external interrupt. 
+ * In this case when the signal changes state on RB0(INT0) then D0 starts 
  * blinking for 4 seconds and then stops. The results can be simulated and
  * verified.  
  * 
