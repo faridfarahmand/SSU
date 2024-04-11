@@ -92,7 +92,7 @@ void INTERRUPT_Initialize (void)
     INTCON0bits.IPEN = 1; // Enable interrupt priority
     INTCON0bits.GIEH = 1; // Enable high priority interrupts
     INTCON0bits.GIEL = 1; // Enable low priority interrupts
-    INTCON0bits.INT0EDG = 1; // Interrupt on rising edge of INT1 pin
+    INTCON0bits.INT0EDG = 1; // Interrupt on rising edge of INT0 pin
     IPR1bits.INT0IP = 1; // high priority
     PIE1bits.INT0IE = 1;
 
@@ -110,7 +110,7 @@ void main(void) {
     TRISD = 0b00000000; //sets PORTD as all outputs 
     PORTD = 0b00000000; //turns off PORTB outputs so that the LED is initially off
     ANSELB = 0b00000000;
-    TRISB = 0b00000001; //sets PORTB.RB0 as input / INT01
+    TRISB = 0b00000001; //sets PORTB.RB0 as input / INT0
     PORTB = 0b00000000; //turns off PORTD outputs 
 
     WPUB=0xFF;          // weak pull-ups are enabled for port B
