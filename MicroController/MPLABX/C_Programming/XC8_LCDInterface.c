@@ -90,12 +90,12 @@ void main(void)
 {       
     //OSCCON=0x72;                   /* Use Internal Oscillator with Frequency 8MHZ */ 
     LCD_Init();                    /* Initialize 16x2 LCD */
-    LCD_String_xy(1,5,"Embedded System!");    /* Display string at location(row,location). */
+    LCD_String_xy(1,0,"Embedded System!");    /* Display string at location(row,location). */
                                    /* This function passes string to display */
     LCD_String_xy(2,0,"EE310@SSU");   /*Display string at location(row,location). */
                                    /* This function passes string to display */    
     
-    while(1);			
+    while(1);           
 }
 
 /****************************Functions********************************/
@@ -104,45 +104,45 @@ void LCD_Init()
     MSdelay(15);           /* 15ms,16x2 LCD Power on delay */
     LCD_Port = 0x00;       /* Set PORTB as output PORT for LCD data(D0-D7) pins */
     LCD_Control = 0x00;    /* Set PORTD as output PORT LCD Control(RS,EN) Pins */
-    LCD_Command(0x38);     /* uses 2 line and initialize 5*7 matrix of LCD */
     LCD_Command(0x01);     /* clear display screen */
+    LCD_Command(0x38);     /* uses 2 line and initialize 5*7 matrix of LCD */
     LCD_Command(0x0c);     /* display on cursor off */
     LCD_Command(0x06);     /* increment cursor (shift cursor to right) */
 }
 
 void LCD_Clear()
 {
-    	LCD_Command(0x01); /* clear display screen */
+        LCD_Command(0x01); /* clear display screen */
 }
 
 void LCD_Command(char cmd )
 {
-	ldata= cmd;            /* Send data to PORT as a command for LCD */   
-	RS = 0;                /* Command Register is selected */
-	EN = 1;                /* High-to-Low pulse on Enable pin to latch data */ 
-	NOP();
-	EN = 0;
-	MSdelay(3);	
+    ldata= cmd;            /* Send data to PORT as a command for LCD */   
+    RS = 0;                /* Command Register is selected */
+    EN = 1;                /* High-to-Low pulse on Enable pin to latch data */ 
+    NOP();
+    EN = 0;
+    MSdelay(3); 
 }
 
 void LCD_Char(char dat)
 {
-	ldata= dat;            /* Send data to LCD */  
-	RS = 1;                /* Data Register is selected */
-	EN=1;                  /* High-to-Low pulse on Enable pin to latch data */   
-	NOP();
-	EN=0;
-	MSdelay(1);
+    ldata= dat;            /* Send data to LCD */  
+    RS = 1;                /* Data Register is selected */
+    EN=1;                  /* High-to-Low pulse on Enable pin to latch data */   
+    NOP();
+    EN=0;
+    MSdelay(1);
 }
 
 
 void LCD_String(const char *msg)
 {
-	while((*msg)!=0)
-	{		
-	  LCD_Char(*msg);
-	  msg++;	
-    	}
+    while((*msg)!=0)
+    {       
+      LCD_Char(*msg);
+      msg++;    
+        }
 }
 
 void LCD_String_xy(char row,char pos,const char *msg)
