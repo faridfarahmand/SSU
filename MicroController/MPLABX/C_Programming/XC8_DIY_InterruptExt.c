@@ -88,7 +88,7 @@ void INTERRUPT_Initialize (void)
     // Set the interrup high priority (IP) for INT0 - INT0IP
     // Enable the interrup (IE) for INT0
 
-    //Clear interrupt flag for INT01
+    //Clear interrupt flag for INT0
   
     // Change IVTBASE by doign the following
     // Set IVTBASEU to 0x00 
