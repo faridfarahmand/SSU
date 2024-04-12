@@ -1,9 +1,7 @@
 /*
- * The purpose of this program is demonstrate INT01 as an external interrupt. 
- * In this case when the signal changes state on RB0(INT01) then D0 starts 
- * blinking for 4 seconds and then stops. The results can be simulated and
- * verified.  
- * 
+ * The purpose of this program is to demonstrate how a 20x2 LCD can be interfaced with a PIC processor. 
+ * Refer to the lecture slides for more details on the physical connections.
+ * You may want to consider changing this code, as needed, depending on your hardware. 
  * Author: Farid Farahmand 
  */
 
