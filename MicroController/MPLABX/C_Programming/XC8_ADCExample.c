@@ -108,16 +108,19 @@ void ADC_Init(void)
        //Setup ADC
     ADCON0bits.FM = 1;  //right justify
     ADCON0bits.CS = 1; //ADCRC Clock
-    ADPCH = 0x00; //RA0 is Analog channel
+    
     TRISAbits.TRISA0 = 1; //Set RA0 to input
     ANSELAbits.ANSELA0 = 1; //Set RA0 to analog
     // Added 
     ADPCH = 0x00; //Set RA0 as Analog channel in ADC ADPCH
     ADCLK = 0x00; //set ADC CLOCK Selection register to zero
+    
     ADRESH = 0x00 // Clear ADC Result registers
     ADRESL = 0x00 
+    
     ADPERL = 0x00 // set precharge select to 0 in register ADPERL & ADPERH
     ADPERH = 0x00 
+    
     ADACQL = 0x00  // set acquisition low and high byte to zero 
     ADACQH = 0x00    
     
