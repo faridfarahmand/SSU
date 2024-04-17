@@ -95,7 +95,10 @@ void main() {
 
        // DO: Write a code to translate the values from ADRESH:ADRESL register 
       //         pair to IO Port. In this case we can connect ADRESL to Port D
-        
+
+        /*This is used to convert integer value to ASCII string*/
+        sprintf(data,"%.2f",voltage);
+        strcat(data," V");	/*Concatenate result and unit to print*/
     }
 }
 
