@@ -1,9 +1,8 @@
 /*
- * The purpose of this program is demonstrate INT01 as an external interrupt.
- * In this case when the signal changes state on RB0(INT01) then D0 starts
- * blinking for 4 seconds and then stops. The results can be simulated and
- * verified.
- *
+ * The purpose of this program is demonstrate How ADC operates. 
+ * Conenct your input to RA0. 
+ * Complete the code by modifying all the places identified by "DO:"
+ * Use a port to represent the input voltage in binary.  
  * Author: Farid Farahmand
  */
 
@@ -77,7 +76,7 @@
 int digital; // holds the digital value 
 float voltage; // hold the analog value (volt))
 char data[10];
-void ADC_Init(void);
+// DO: Declare void ADC_Init
 
 /*This code block configures the ADC
 for polling, VDD and VSS references, ADCRC
@@ -87,29 +86,26 @@ are included.
  */
 void main() {
     //ADC Initialization
-    ADC_Init();
+    //DO: CALL ADC_Init function defined below;
     while (1) {
-        ADCON0bits.GO = 1; //Start conversion
+        //DO: Set ADCON0 Go to start conversion
         while (ADCON0bits.GO); //Wait for conversion done
         digital = (ADRESH*256) | (ADRESL);/*Combine 8-bit LSB and 2-bit MSB*/
-        voltage= digital*((float)Vref/(float)(4096)); 
-        
-        //print on LCD 
-        /*It is used to convert integer value to ASCII string*/
-        sprintf(data,"%.2f",voltage);
+        // DO: define voltage = Vref/4096 (note that voltage is float type
 
-        strcat(data," V");	/*Concatenate result and unit to print*/
-        //LCD_String_xy(2,4,data);/*Send string data for printing*/
+       // DO: Write a code to translate the values from ADRESH:ADRESL register 
+      //         pair to IO Port. In this case we can connect ADRESL to Port D
+        
     }
 }
 
 void ADC_Init(void)
 {
        //Setup ADC
-    ADCON0bits.FM = 1;  //right justify
-    ADCON0bits.CS = 1; //ADCRC Clock
-    ADPCH = 0x00; //RA0 is Analog channel
-    TRISAbits.TRISA0 = 1; //Set RA0 to input
-    ANSELAbits.ANSELA0 = 1; //Set RA0 to analog
-    ADCON0bits.ON = 1; //Turn ADC On 
+    //DO: using ADCON0 set right justify
+    //DO: Using ADCON0 set ADCRC Clock
+    //DO: Using ADPCH register set RA0 as Analog channel
+    //DO: Set RA0 to input
+    //DO: Set RA0 to analog
+    //DO: Turn ADC On on register ADCON0
 }
