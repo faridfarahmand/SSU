@@ -63,7 +63,7 @@
 #pragma config CP = OFF         // PFM and Data EEPROM Code Protection bit (PFM and Data EEPROM code protection disabled)
 
 #include <xc.h> // must have this
-#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
+//#include "../../../../../Program Files/Microchip/xc8/v2.40/pic/include/proc/pic18f46k42.h"
 //#include "C:\Program Files\Microchip\xc8\v2.40\pic\include\proc\pic18f46k42"
 #include <stdio.h>
 #include <string.h>
@@ -115,14 +115,14 @@ void ADC_Init(void)
     ADPCH = 0x00; //Set RA0 as Analog channel in ADC ADPCH
     ADCLK = 0x00; //set ADC CLOCK Selection register to zero
     
-    ADRESH = 0x00 // Clear ADC Result registers
-    ADRESL = 0x00 
+    ADRESH = 0x00; // Clear ADC Result registers
+    ADRESL = 0x00; 
     
-    ADPERL = 0x00 // set precharge select to 0 in register ADPERL & ADPERH
-    ADPERH = 0x00 
+    ADPREL = 0x00; // set precharge select to 0 in register ADPERL & ADPERH
+    ADPREH = 0x00; 
     
-    ADACQL = 0x00  // set acquisition low and high byte to zero 
-    ADACQH = 0x00    
+    ADACQL = 0x00;  // set acquisition low and high byte to zero 
+    ADACQH = 0x00;    
     
     ADCON0bits.ON = 1; //Turn ADC On 
 }
