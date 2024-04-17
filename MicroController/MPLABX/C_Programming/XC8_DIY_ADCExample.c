@@ -93,8 +93,8 @@ void main() {
         digital = (ADRESH*256) | (ADRESL);/*Combine 8-bit LSB and 2-bit MSB*/
         // DO: define voltage = Vref/4096 (note that voltage is float type
 
-       // DO: Write a code to translate the values from ADRESH:ADRESL register 
-      //         pair to IO Port. In this case we can connect ADRESL to Port D
+        // DO: Write a code to translate the values from ADRESH:ADRESL register 
+        //         pair to IO Port. In this case we can connect ADRESL to Port D
 
         /*This is used to convert integer value to ASCII string*/
         sprintf(data,"%.2f",voltage);
