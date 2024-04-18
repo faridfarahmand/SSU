@@ -108,13 +108,13 @@ void ADC_Init(void)
     //DO: using ADCON0 set right justify
     //DO: Using ADCON0 set ADCRC Clock
     //DO: Using ADPCH register set RA0 as Analog channel
-    //DO: Set RA0 to input
+    //DO: Set RA0 as Analog channel in ADC ADPCH
     //DO: Set RA0 to analog
     //DO: Turn ADC On on register ADCON0
-    //DO: Set RA0 as Analog channel in ADC ADPCH
+    
     //DO: set ADC CLOCK Selection register to zero
     //DO: Clear ADC Result registers
-   //DO: set precharge select to 0 in register ADPERL & ADPERH
+    //DO: set precharge select to 0 in register ADPERL & ADPERH
     //DO: set acquisition low and high byte to zero 
    
 }
