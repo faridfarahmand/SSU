@@ -89,7 +89,9 @@ void main() {
     //DO: CALL ADC_Init function defined below;
     while (1) {
         //DO: Set ADCON0 Go to start conversion
+        
         while (ADCON0bits.GO); //Wait for conversion done
+        
         digital = (ADRESH*256) | (ADRESL);/*Combine 8-bit LSB and 2-bit MSB*/
         // DO: define voltage = Vref/4096 (note that voltage is float type
 
@@ -104,17 +106,21 @@ void main() {
 
 void ADC_Init(void)
 {
-       //Setup ADC
+    //------Setup the ADC
     //DO: using ADCON0 set right justify
     //DO: Using ADCON0 set ADCRC Clock
-    //DO: Using ADPCH register set RA0 as Analog channel
-    //DO: Set RA0 as Analog channel in ADC ADPCH
+
+    //DO: Set RA0 to input
     //DO: Set RA0 to analog
-    //DO: Turn ADC On on register ADCON0
-    
+
+    //DO: Set RA0 as Analog channel in ADC ADPCH
     //DO: set ADC CLOCK Selection register to zero
+
     //DO: Clear ADC Result registers
+
     //DO: set precharge select to 0 in register ADPERL & ADPERH
-    //DO: set acquisition low and high byte to zero 
-   
+
+    //DO: Set qcquisition LOW and HIGH bytes to zero
+
+    //DO: Turn ADC On on register ADCON0   
 }
