@@ -2,7 +2,7 @@
 The purpose of this file s to show how to have different header files, each containing specific parts of the code. 
 In this case we demosntrate how to separate functions, from config bits, and definitions. 
 
-** configheader.h **
+**configheader.h**
 // all config files …..
 
 ** Initheader.h **
