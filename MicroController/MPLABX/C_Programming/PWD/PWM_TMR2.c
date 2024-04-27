@@ -1,9 +1,22 @@
 /*
- * The purpose of this program is demonstrate INT01 as an external interrupt.
- * In this case when the signal changes state on RB0(INT01) then D0 starts
- * blinking for 4 seconds and then stops. The results can be simulated and
- * verified.
- *
+* The purpose of this program is to generate a PWM with different pulse width 
+* The output of the PWM will be on RB2
+* myLED is connected to RB0 and it toggles very slowly
+* In order to change the PULSE period and width you need to do the following: 
+
+ * PWM Period=
+ * [T2PR+1]*4*Tosc*PreScale
+
+ * Pulse Width=
+ * Tosc*Prescale*CCPR2
+
+ * Duty Cycle Ratio %=
+ * CCPR2 / [4*(T2PR+1)]
+
+ * The presale value for the timer is defined in T2CON register. 
+ * The ACTUAL value of CCP2 MUST be varied by changing
+ * PWM2_INITIALIZE_DUTY_VALUE set to the equivalent decimal value for CCPR2
+
  * Author: Farid Farahmand
  */
 
