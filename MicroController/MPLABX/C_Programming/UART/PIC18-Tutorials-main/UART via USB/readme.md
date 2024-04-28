@@ -1,7 +1,3 @@
-# Tutorial Video
-This tutorial video has been created by Mr. Diego King. Many thanks for his efforts: 
-https://youtu.be/vfWQTlpFnVw
-
 # Introduction to MPLAB MCC 
 When starting a new project using PIC16, PIC24, or PIC32 microcontrollers, the setup of the configuration and all the peripherals can be time-consuming, especially for new projects. The MPLAB® Code Configurator (MCC) is an automatically installed plugin for MPLAB X IDE that simplifies this down to a series of simple selections from the menus within the MCC. The MCC generates driver code using a Graphical User Interface (GUI). The generated drivers control the peripherals on PIC® microcontrollers. The GUI provides an easy means for setting up the configuration of the peripherals.
 
@@ -9,7 +5,9 @@ Additionally, the MCC is used to configure and generate libraries, which allows 
 
 Additionally, the MCC is used to configure and generate libraries, which allows you to configure and generate code for software libraries and off-chip peripherals. The generated drivers or libraries can be used in any PIC device application program. You can learn more here: https://developerhelp.microchip.com/xwiki/bin/view/software-tools/mcc/ 
 
-In this tutorial we demosntrate how to use MCC to configure the USART module. 
+In this tutorial we demosntrate how to use MCC to configure the USART module. Watch this Tutorial Video first: 
+https://youtu.be/vfWQTlpFnVw
+Many thanks to Mr. Diego King for creating this tutorial and tutorial video. 
 
 # Step 1. Create a Project w/ MCC
 Create a new XC8 project for the Curiosity Nano, ensuring "open MCC when finished" is checked. Allow MCC to open, and click through any notifications.
