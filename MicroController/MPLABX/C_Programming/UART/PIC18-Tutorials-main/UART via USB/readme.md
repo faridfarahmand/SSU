@@ -16,7 +16,7 @@ A UART window should come up with a 'Dependency Selector' option. Select the UAR
 ![Step 3](images/step3.png)
 
 # Step 4. Redirect Printf to UART
-In the same UART window, after selecting the peripheral library, there should be some configuration settings. Ensure the 'Redirect Printf to UART' option is enabled.
+In the same UART window, after selecting the peripheral library, there should be some configuration settings. Ensure the 'Redirect Printf to UART' option is enabled. In the figure below note that we are using Baudrate of 9600, Parity = NONE, Data Size = 8. Stop Bit = 1, and Control Mode = NONE. 
 
 ![Step 4](images/step4.png)
 
@@ -30,6 +30,10 @@ That should be all the configuration needed. Click 'Generate' in the 'Resource M
 
 ![Step 6](images/Step6.png)
 
+After generating the code, a number of new functions and classes are generated. You can see a list of all these functional and classes under the tab called Classes.  
+
+![Step 6b](images/Step6b.png)
+
 # Step 7. Initialize the new Module
 Navigate to main.c in the newly generated project files and add the line `UART2_Initialize();` within the main function. Now, once programmed, the board will write any printf commands to the COM port of your computer.
 
@@ -41,11 +45,15 @@ Using PuTTY or another serial console program you can now receive communications
 ![Step 8](images/fin.png)
 
 # Step 9. Configuring IO Ports
-It is very simple to configure a GPIO port as an input or output using MCC. Simply, open the MCC. Click on the GPIO and configure it as input or output. 
+It is very simple to configure a GPIO port as an input or output using MCC. Simply, open the MCC. Click on the GPIO and configure it as input or output. In this case we are configuring RB1 as an output. Note that everytime we make a change to the MCC we need to click on GENERATE button next to the Project Resources to update the MCC code. 
 
 ![Step 8](images/step8e.png)
 
- Note that as you configure different GPIO ports the pins area on the chip: 
- ![Step 8b](images/step8b.png) 
- 
+ Note that as you configure different GPIO ports the pins are updated on the chip: 
 
+ ![Step 8b](images/step8b.png) 
+
+# Step 10. Changing the MAIN.C
+We can now go back to the main.c program and add a little more code. The figure below shows the modified main.c. Note that we are using RB1 as an output and added a new RANDOM Function generator. 
+ 
+ ![Step 10](images/step10.png) 
