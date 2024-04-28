@@ -46,6 +46,6 @@ It is very simple to configure a GPIO port as an input or output using MCC. Simp
 ![Step 8](images/step8.png)
 
  Note that as you configure different GPIO ports the pins area on the chip: 
- ![Step 8b](images/step8b.png)
+ ![Step 8b](images/step8b.png) 
  
 
