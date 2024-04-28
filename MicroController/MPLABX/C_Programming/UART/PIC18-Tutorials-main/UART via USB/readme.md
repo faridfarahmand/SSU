@@ -40,7 +40,7 @@ Navigate to main.c in the newly generated project files and add the line `UART2_
 ![Step 7](images/step7.png)
 
 # Step 8. Monitoring the COM ports
-Using PuTTY or another serial console program you can now receive communications from a programmed board. If you don't have PuTTY download Tera Term. [Download Tera Term from here:] (https://en.softonic.com/download/tera-term/windows/post-download)
+Using PuTTY or another serial console program you can now receive communications from a programmed board. If you don't have PuTTY download Tera Term. [Download Tera Term from here:](https://en.softonic.com/download/tera-term/windows/post-download). It is Also possible to use online serial terminals such as  https://serial.huhn.me/. 
 
 ![Step 8](images/fin.png)
 
@@ -57,3 +57,9 @@ It is very simple to configure a GPIO port as an input or output using MCC. Simp
 We can now go back to the main.c program and add a little more code. The figure below shows the modified main.c. Note that we are using RB1 as an output and added a new RANDOM Function generator. 
  
  ![Step 10](images/step10.png) 
+
+ # Step 11. The New Output
+Once again, let's check the new output using the Serial Terminal. We can also look at the output of the RB1 using a scope. 
+
+ ![Step 11](images/step11.png) 
+
