@@ -43,7 +43,7 @@ Using PuTTY or another serial console program you can now receive communications
 # Step 9. Configuring IO Ports
 It is very simple to configure a GPIO port as an input or output using MCC. Simply, open the MCC. Click on the GPIO and configure it as input or output. 
 
-![Step 8](images/step8.png)
+![Step 8](images/step8e.png)
 
  Note that as you configure different GPIO ports the pins area on the chip: 
  ![Step 8b](images/step8b.png) 
