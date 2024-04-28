@@ -36,6 +36,16 @@ Navigate to main.c in the newly generated project files and add the line `UART2_
 ![Step 7](images/step7.png)
 
 # Step 8. Monitoring the COM ports
-Using PuTTY or another serial console program you can now receive communications from a programmed board.
+Using PuTTY or another serial console program you can now receive communications from a programmed board. If you don't have PuTTY download Tera Term. [Download Tera Term from here:] (https://en.softonic.com/download/tera-term/windows/post-download)
 
 ![Step 8](images/fin.png)
+
+# Step 9. Configuring IO Ports
+It is very simple to configure a GPIO port as an input or output using MCC. Simply, open the MCC. Click on the GPIO and configure it as input or output. 
+
+![Step 8](images/step8.png)
+
+ Note that as you configure different GPIO ports the pins area on the chip: 
+ ![Step 8b](images/step8b.png)
+ 
+
