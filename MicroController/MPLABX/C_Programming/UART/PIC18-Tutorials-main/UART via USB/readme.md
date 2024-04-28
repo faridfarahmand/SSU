@@ -32,7 +32,7 @@ That should be all the configuration needed. Click 'Generate' in the 'Resource M
 
 After generating the code, a number of new functions and classes are generated. You can see a list of all these functional and classes under the tab called Classes.  
 
-![Step 6b](images/Step6b.png)
+![Step 6b](images/step6b.png)
 
 # Step 7. Initialize the new Module
 Navigate to main.c in the newly generated project files and add the line `UART2_Initialize();` within the main function. Now, once programmed, the board will write any printf commands to the COM port of your computer.
