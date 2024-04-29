@@ -70,8 +70,17 @@ We can now go back to the main.c program and add a little more code. The figure 
  # Step 11. The New Output
 Once again, let's check the new output using the Serial Terminal. We can also look at the output of the RB1 using a scope. 
 
-
  ![Step 11](images/step11.png) 
+
+  # Step 12. Interfacing with Matlab
+Assuming you can send out numbers from your PIC to the terminal, it is easy to use MATLAB and plot, save, filter, or manipulate the received numbers using MATLAB. 
+The main step is to enable your COM port using the following MATLAB command: 
+
+```
+s = serialport("COM3",9600,"Timeout",5);
+data = read(s,16,"uint32");
+```
+Here is a very good example of a [dashboard using Matlab:](https://www.mathworks.com/help/matlab/import_export/create-an-app-to-connect-to-a-serial-port-gps-device-to-display-and-log-output.html)
 
  # References
 1. Refer to lecture slides for more information:
