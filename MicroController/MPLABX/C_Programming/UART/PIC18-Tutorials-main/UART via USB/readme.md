@@ -80,12 +80,13 @@ The main step is to enable your COM port using the following MATLAB command:
 s = serialport("COM3",9600,"Timeout",5);
 data = read(s,16,"uint32");
 ```
-Here is a very good example of a [dashboard using Matlab:](https://www.mathworks.com/help/matlab/import_export/create-an-app-to-connect-to-a-serial-port-gps-device-to-display-and-log-output.html)
+Here is a very good example of a [dashboard using Matlab:](https://www.mathworks.com/help/matlab/import_export/create-an-app-to-connect-to-a-serial-port-gps-device-to-display-and-log-output.html). See [Ref 3] for more information.  
 
  # References
 1. Refer to lecture slides for more information:
  https://docs.google.com/presentation/d/1JKKtNu3tkO9oB1XLOM3FUndg2SQ4MABi4Z2qnZM9kFc/edit?usp=sharing
 2. Tutorial video by D. King: https://youtu.be/vfWQTlpFnVw
+3. [Creating a serial data logger using Matlab:](https://billwaa.wordpress.com/2013/07/10/matlab-real-time-serial-data-logger/)
 
  # Appendix A - Serial Terminals
 There are many different tools we can use to monitor the serial data. In some case we want to plot the data. A good program is the one that can easily be setup, you can send and receive characters easily, and plot the received data!
