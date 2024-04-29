@@ -49,7 +49,7 @@ Navigate to main.c in the newly generated project files and add the line `UART2_
 ![Step 7](images/step7.png)
 
 # Step 8. Monitoring the COM ports
-Using PuTTY or another serial console program you can now receive communications from a programmed board. If you don't have PuTTY download Tera Term. [Download Tera Term from here:](https://en.softonic.com/download/tera-term/windows/post-download). It is Also possible to use online serial terminals such as  https://serial.huhn.me/. 
+Using PuTTY or another serial console program you can now receive communications from a programmed board. If you don't have PuTTY download Tera Term. [Download Tera Term from here:](https://en.softonic.com/download/tera-term/windows/post-download). It is Also possible to use online serial terminals such as  https://serial.huhn.me/. See Appendix A for more information. 
 
 ![Step 8](images/fin.png)
 
@@ -70,5 +70,25 @@ We can now go back to the main.c program and add a little more code. The figure 
  # Step 11. The New Output
 Once again, let's check the new output using the Serial Terminal. We can also look at the output of the RB1 using a scope. 
 
+
  ![Step 11](images/step11.png) 
+
+ # References
+1. Refer to lecture slides for more information:
+ https://docs.google.com/presentation/d/1JKKtNu3tkO9oB1XLOM3FUndg2SQ4MABi4Z2qnZM9kFc/edit?usp=sharing
+2. Tutorial video by D. King: https://youtu.be/vfWQTlpFnVw
+
+ # Appendix A - Serial Terminals
+There are many different tools we can use to monitor the serial data. In some case we want to plot the data. A good program is the one that can easily be setup, you can send and receive characters easily, and plot the received data!
+Here are some common tools
+
+Here is a good list of available programs
+* [An online serial monitor:](https://serial.huhn.me/)
+* [Download Tera Term from here:](https://en.softonic.com/download/tera-term/windows/post-download).
+* [Download Cool Term from here:](https://coolterm.en.lo4d.com/windows#google_vignette) - CoolTerm offers plotting option
+* [An online serial plotter:](https://vaadin.com/labs/serial-api)
+* Use Arduino Serial monitor (it has a plotter - must be downloaded)
+
+   
+
 
