@@ -80,9 +80,14 @@ data = read(s,16,"uint32");
 ```
 Here is a very good example of a [dashboard using Matlab:](https://www.mathworks.com/help/matlab/import_export/create-an-app-to-connect-to-a-serial-port-gps-device-to-display-and-log-output.html). See [Ref 3] for more information.  
 
- # Excercise (DIY)
-Develop a code that generates a random number between 1-100 every one second write the value on the serial port. Then, using a serial terminal plot the values. Take a snapshot of your results and submit to Canvas. You need to have at least 30 points. ![image](https://github.com/faridfarahmand/SSU/assets/18106204/68a15567-392d-49ae-8da3-bbed2ad475ab)
- 
+ # Assignment
+Develop a code that generates a random number between 1-100 every one second write the value on the serial port. Then, using a serial terminal plot the values. Take a snapshot of your results and submit to Canvas. You need to have at least 30 points. 
+
+ # Graduate Students Only
+Graduate students must complete this section, as well. 
+Using MCC modify the code so you can transmit and receive through the serial interface. Your code must be able to receive a character from the serial interface (for example A) to turn on an LED. If PIC receives a different character (say B) the LED should be turned off. You must demonstrate your project. 
+
+
  # References
 1. Refer to lecture slides for more information:
  https://docs.google.com/presentation/d/1JKKtNu3tkO9oB1XLOM3FUndg2SQ4MABi4Z2qnZM9kFc/edit?usp=sharing
