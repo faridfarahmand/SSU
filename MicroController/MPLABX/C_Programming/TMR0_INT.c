@@ -176,10 +176,10 @@ void main (void) {
 
     while (1) {
         PORTDbits.RD0=0;//turns on LED
-        __delay_ms(10);//delays for 1 second
+        __delay_ms(1);//delays for 1 second
             //PORTD=0b00000011;//turns off LED
         PORTDbits.RD0=1;//turns on LED    
-        __delay_ms(10);//delays for 1 second
+        __delay_ms(1);//delays for 1 second
     }
     
     
