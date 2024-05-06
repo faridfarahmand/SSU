@@ -32,6 +32,7 @@ The 'Pin Grid View' window should reflect the new UART2 module which was just ad
 
 ![Step 5](images/step5.png)
 
+# Step 5B. Related Registers
 In the Build view of the MCC click on UART2PLIB block. Then click on Register Initialization tab. Review the register values. 
 
 ![Step 5b](images/step8f.png)
