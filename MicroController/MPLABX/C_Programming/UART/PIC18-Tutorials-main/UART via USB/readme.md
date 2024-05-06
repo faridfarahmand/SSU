@@ -32,6 +32,10 @@ The 'Pin Grid View' window should reflect the new UART2 module which was just ad
 
 ![Step 5](images/step5.png)
 
+In the Build view of the MCC click on UART2PLIB block. Then click on Register Initialization tab. Review the register values. 
+
+![Step 5b](images/step8f.png)
+
 # Step 6. Generate
 That should be all the configuration needed. Click 'Generate' in the 'Resource Management' window and close MCC when it finishes generating the project files.
 
