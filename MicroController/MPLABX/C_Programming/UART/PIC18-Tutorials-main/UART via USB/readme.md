@@ -87,6 +87,8 @@ Develop a code that generates a random number between 1-100 every one second wri
 Graduate students must complete this section, as well. 
 Using MCC modify the code so you can transmit and receive through the serial interface. Your code must be able to receive a character from the serial interface (for example A) to turn on an LED. If PIC receives a different character (say B) the LED should be turned off. You must demonstrate your project. 
 
+# GitHub
+Once you have completed the code and debugged it, submit the final code to your GitHub, in the Assignment folder. Make sure you name it properly. 
 
  # References
 1. Refer to lecture slides for more information:
