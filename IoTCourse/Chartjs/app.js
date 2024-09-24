@@ -1,6 +1,6 @@
 $(document).ready(function(){
   $.ajax({
-    url: "https://faridfarahmand.000webhostapp.com/Chartjs/data.php", // location of the datafile
+    url: "https://faridfarahmand.net/Chartjs/data.php", // location of the datafile
     method: "GET",
     success: function(data) {
       console.log(data);
