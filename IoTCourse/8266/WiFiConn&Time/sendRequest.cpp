@@ -22,8 +22,8 @@
 const char* ssid     = "Wifi"; // must be exactly as it apears - case sensitive
 const char* password = "Ixdcd";
 
-//https://faridfarahmand.000webhostapp.com/PHPCRUD/firstphp_db_insert.php?nodeId=node_3&nodeTemp=39&timeReceived=2022-10-25T20:44:11.4055468
-String url     = "https://faridfarahmand.000webhostapp.com/PHPCRUD/firstphp_db_insert.php";
+//https://faridfarahmand.net/PHPCRUD/firstphp_db_insert.php?nodeId=node_3&nodeTemp=39&timeReceived=2022-10-25T20:44:11.4055468
+String url     = "https://faridfarahmand.net/PHPCRUD/firstphp_db_insert.php";
 String data1   = "?nodeId=node_11&nodeTemp="; // currently empty
 u_int8_t tempValue = 0;
 String data2   = "&timeReceived=2022-10-25T20:44:11.4055468";
