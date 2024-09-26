@@ -107,7 +107,7 @@ void setup() {
   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   Serial.begin(9600);
   setup_wifi();
-  client.setServer(mqtt_server, 1883);
+  client.setServer(mqtt_server, 8883);
   client.setCallback(callback);
 }
 //------------------------------------------
