@@ -19,6 +19,14 @@
 #     - https://nam1.cloud.thethings.network/console/applications/cubecell-bc1/api-keys
 # --------------------------------------------------
 
+#####  Used for platformIO
+#    #include "LoRaWan_APP.h"
+#    #include "Arduino.h"
+#    #include <Wire.h>
+#    #include <Adafruit_BMP280.h>
+#    #include <Adafruit_AHTX0.h>
+#    #include <AHT10.h>
+
 import paho.mqtt.client as mqtt
 import json
 
@@ -51,12 +59,14 @@ def on_message(client, userdata, message):
         temp6 = payload['uplink_message']['decoded_payload'].get('Temp6')
         temp7 = payload['uplink_message']['decoded_payload'].get('Temp7')
         temp89 = payload['uplink_message']['decoded_payload'].get('Temp89')
+        rx_rssi = payload['uplink_message']['rx_metadata'][0].get('rssi')
         print(f"Data Count: {counter}")
         print(f"NodeId: {node_id}")
         print(f"Temp45: {temp45}")
         print(f"Temp6: {temp6}")
         print(f"Temp7: {temp7}")
         print(f"Temp89: {temp89}")
+        print(f"RSSI: {rx_rssi}")
         print(f"-----------")
         counter += 1
     except Exception as e:
