@@ -16,6 +16,14 @@
 #include "LoRaWanMinimal_APP.h"
 #include "Arduino.h"
 
+#####  Used for platformIO
+#    #include "LoRaWan_APP.h"
+#    #include "Arduino.h"
+#    #include <Wire.h>
+#    #include <Adafruit_BMP280.h>
+#    #include <Adafruit_AHTX0.h>
+#    #include <AHT10.h>
+
 /* ABP para*/
 uint8_t devEui[] = {0x70,0xB3,0xD5,0x7E,0xD0,0x06,0xB0,0x3C}; // From TTN
 uint8_t appEui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // all zero 
