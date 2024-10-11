@@ -10,7 +10,7 @@
 # Outputs:
 #     - Data received by TTN
 # Date: October 11, 2024
-# File Dependencies / Libraries: None
+# File Dependencies / Libraries: make sure you have installed: pip install paho-mqtt
 # Compiler: Python 3
 # Author: Farid Farahmand
 # Versions:
