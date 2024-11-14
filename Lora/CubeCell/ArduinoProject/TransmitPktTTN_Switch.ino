@@ -5,15 +5,20 @@
  * please disable AT_SUPPORT in tools menu
  * David Brodrick.
  *
- * 
+ * This program was initialy developed by CubeCell. 
  * Additional Comments by F.Farahmand 
- *   For TTN setup please refer to README
- *   The Data transmission has been modified. Please refer to the README 
+ *   This code works with Arduino IDE:
+ *	In the "Preferences" of the IDE add the following: 
+ *		https://github.com/HelTecAutomation/CubeCell-Arduino/releases/download/V1.5.0/package_CubeCell_index.json
+ *      The random data is defined in the main loop() and is sent using LoRaWAN.send() function.
+ *   For TTN setup please refer to README.
+ *   The Data transmission has been modified. Please refer to the README. 
  *   Although the original program is for OTAA, the ABP parameters are given. 
- *   In this program once the switch is pressed a packet is sent to the TTN 
- *   Each packet contain random values
- *   The switch is connected to GPIO1
- *   The device is registered on Farid's TTN ID: faridcubecell
+ *   In this program once the switch is pressed a packet is sent to the TTN. 
+ *   Each packet contain random values.
+ *   The switch is connected to GPIO1 0 the transmission happens only when the switch is pressed
+ *   	When the switch is pressed the module receives a high signal.	
+ *   The device is registered on Farid's TTN ID: faridcubecell.
  */
 
 #include "LoRaWanMinimal_APP.h"
