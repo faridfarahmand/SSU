@@ -27,7 +27,7 @@ To program the CubeCell module, use the Arduino IDE. Follow these steps to set u
 
 This code generates random data, which is defined in the `loop()` function. The random data is sent to TTN using the `LoRaWAN.send()` function.
 
-- **Data Transmission:** Data is sent when the switch connected to GPIO10 is pressed.
+- **Data Transmission:** Data is sent when the switch connected to GPIOI0 is pressed.
 - **Switch Configuration:** The switch is set to active HIGH.
 
 To modify data formats or frequency of data transmission, adjust the code in the `loop()` function as required.
