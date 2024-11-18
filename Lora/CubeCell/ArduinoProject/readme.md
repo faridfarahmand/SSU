@@ -8,7 +8,7 @@ This document provides a step-by-step guide to configure and program the CubeCel
 2. [Code Overview](#code-overview)
 3. [Hardware Setup](#hardware-setup)
 4. [TTN Configuration](#ttn-configuration)
-5. [Adding a Gateway to the TTN](#Adding_a_Gateway_to_the_TTN)
+5. [Adding a Gateway to the TTN](#Adding-a-Gateway-to-the-TTN)
 
 ---
 
