@@ -127,7 +127,7 @@ These steps are shown in the figure below:
 ![image](https://github.com/user-attachments/assets/9e59385d-c442-4702-8a01-90acf545bbfb)
 
 7. Click on one of teh received data lines. You will see teh details of each packet. Note the information such as
-uplink data, SNR, locatin, RSSI, time stamp, received time, etc. 
+uplink data, SNR, location, RSSI, time stamp, received time, etc. 
 
    ![image](https://github.com/user-attachments/assets/3bee3f2c-fb17-4089-acd3-51cabdbc2206)
 
