@@ -4,14 +4,14 @@
 This document provides a step-by-step guide to configure and program the CubeCell module to send data to The Things Network (TTN) platform.
 
 ## Table of Contents
-1. [Arduino IDE Setup](#arduino-ide-setup)
-2. [Code Overview](#code-overview)
-3. [Hardware Setup](#hardware-setup)
-4. [TTN Configuration](#ttn-configuration)
-5. [Adding a Gateway to the TTN](#Adding-a-Gateway-to-the-TTN)
+2. [Arduino IDE Setup](#arduino-ide-setup)
+3. [Code Overview](#code-overview)
+4. [Hardware Setup](#hardware-setup)
+5. [Signing for TTN Account](#Signing_for_TTN_Account)
+6. [TTN Configuration](#ttn-configuration)
+7. [Adding a Gateway to the TTN](#Adding-a-Gateway-to-the-TTN)
 
 ---
-
 ## Arduino IDE Setup
 
 To program the CubeCell module, use the Arduino IDE. Follow these steps to set up the environment:
@@ -65,6 +65,10 @@ If you are using the **TransmitPktTTN_Switch.ion** code you need to connect the 
 
 - Connect a switch to **GPIOI0**.
 - Ensure the switch is configured to be active HIGH.
+
+## Signing for TTN Account
+TTN is an open source networking layer infrastructure that can be used for free and operates using The Things Stack (TTS). The Things Stack is an enterprise-grade LoRaWAN® Network Server that provides services and tools to securely install and manage millions of LoRaWAN devices in production [2].In addition, The Things Stack contains services and tools to securely manage millions of LoRaWAN devices in production [3]. TTN and TTS both support a wide range of user experience levels. For our work we only focus on using TTN. Therefore, we first need to create a TTN account: 
+- Create a free account on TTN: https://www.thethingsnetwork.org/get-started?login 
 
 ## TTN Configuration
 
