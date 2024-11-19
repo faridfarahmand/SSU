@@ -132,7 +132,10 @@ These steps are shown in the figure below:
 ![image](https://github.com/user-attachments/assets/9e59385d-c442-4702-8a01-90acf545bbfb)
 
 7. Click on one of teh received data lines. You will see teh details of each packet. Note the information such as
-uplink data, SNR, location, RSSI, time stamp, received time, etc. 
+uplink data, SNR, location, RSSI, time stamp, received time, etc. It is important to note the difference between some of these parameters:
+- "SNR" refers to the Signal-to-Noise Ratio, which indicates the strength of a received signal compared to background noise
+- "RSSI" (Received Signal Strength Indicator) simply measures the raw signal strength received,
+- "Channel RSSI" specifically refers to the RSSI value measured on the designated communication channel used by the device on TTN.
 
    ![image](https://github.com/user-attachments/assets/3bee3f2c-fb17-4089-acd3-51cabdbc2206)
 
