@@ -68,7 +68,8 @@ If you are using the **TransmitPktTTN_Switch.ion** code you need to connect the 
 
 ## Signing for TTN Account
 TTN is an open source networking layer infrastructure that can be used for free and operates using The Things Stack (TTS). The Things Stack is an enterprise-grade LoRaWAN® Network Server that provides services and tools to securely install and manage millions of LoRaWAN devices in production [2].In addition, The Things Stack contains services and tools to securely manage millions of LoRaWAN devices in production [3]. TTN and TTS both support a wide range of user experience levels. For our work we only focus on using TTN. Therefore, we first need to create a TTN account: 
-- Create a free account on TTN: https://www.thethingsnetwork.org/get-started?login 
+- Create a free account on TTN: https://www.thethingsnetwork.org/get-started?login
+- Make sure you select and create an account with **The Things Network**
 
 ## TTN Configuration
 
