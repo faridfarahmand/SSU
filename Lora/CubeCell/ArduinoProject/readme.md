@@ -7,7 +7,7 @@ This document provides a step-by-step guide to configure and program the CubeCel
 2. [Arduino IDE Setup](#arduino-ide-setup)
 3. [Code Overview](#code-overview)
 4. [Hardware Setup](#hardware-setup)
-5. [Signing for TTN Account](#Signing_for_TTN_Account)
+5. [Signing for TTN Account](#Signing-for-TTN-Account)
 6. [TTN Configuration](#ttn-configuration)
 7. [Adding a Gateway to the TTN](#Adding-a-Gateway-to-the-TTN)
 
