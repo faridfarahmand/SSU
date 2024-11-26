@@ -4,6 +4,11 @@
  * Date: 
  * For comprehensive documentation and examples, please visit:
  * https://docs.particle.io/firmware/best-practices/firmware-template/
+
+
+THIS CODE AND LIBRARY IS UNTESTED
+
+ 
  */
 
 // Include Particle Device OS APIs
