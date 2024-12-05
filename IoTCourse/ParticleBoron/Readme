@@ -20,5 +20,8 @@ Order:
 // In this example, we're going to register a Particle.variable() with the cloud so that we can read brightness levels from the photoresistor.
 // We'll also register a Particle.function so that we can turn the LED on and off remotely.
 
-  4) Boron_dbLED
+  4) Boron_dbLED - 
+// Similar to the webserver/database assignment with the ESP8266. Utilize an HTTP library from Particle to send a fake temperature and humidity sensor reading to the webserver to be stored in a database.
+// At the same time, call on a different webserver to read the on/off button input
+
   5) Boron_dbLED_FV
