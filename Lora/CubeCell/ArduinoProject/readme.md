@@ -10,6 +10,7 @@ This document provides a step-by-step guide to configure and program the CubeCel
 5. [Signing for TTN Account](#Signing-for-TTN-Account)
 6. [TTN Configuration](#ttn-configuration)
 7. [Adding a Gateway to the TTN](#Adding-a-Gateway-to-the-TTN)
+8. [Retrieving the Data from TTN Using Python](#Retrieving-the-Data-from-TTN-Using-Python)
 
 ---
 ## Arduino IDE Setup
@@ -73,6 +74,8 @@ TTN is an open source networking layer infrastructure that can be used for free 
 
 ## TTN Configuration
 
+For more information please refer to: https://docs.google.com/document/d/1CryTAEMZc1At7M9XHHKHM_6m0iK4PY0fzHtFIz939dM/edit?usp=sharing 
+
 To receive data from the CubeCell module on the TTN platform, follow the following steps to configure your TTN application and add a device:
 
 1. Create a new TTN application if you haven’t already. Follow the steps shown in the figure below. Include the **Application ID**, Name and description, as you prefer:
@@ -131,7 +134,7 @@ These steps are shown in the figure below:
 
 ![image](https://github.com/user-attachments/assets/9e59385d-c442-4702-8a01-90acf545bbfb)
 
-7. Click on one of teh received data lines. You will see teh details of each packet. Note the information such as
+7. Click on one of the received data lines. You will see teh details of each packet. Note the information such as
 uplink data, SNR, location, RSSI, time stamp, received time, etc. It is important to note the difference between some of these parameters:
 - "SNR" refers to the Signal-to-Noise Ratio, which indicates the strength of a received signal compared to background noise
 - "RSSI" (Received Signal Strength Indicator) simply measures the raw signal strength received,
@@ -145,4 +148,6 @@ If you would like to setup a gateway, got to Gateway, click on **+Register Gatew
 ![image](https://github.com/user-attachments/assets/5a95ebf6-9452-464e-84ea-bb8781e75f6d)
 
 
--------------
+## Retrieving the Data from TTN Using Python
+Please refer to Section 4 of the main document: https://docs.google.com/document/d/1CryTAEMZc1At7M9XHHKHM_6m0iK4PY0fzHtFIz939dM/edit?usp=sharing  
+
