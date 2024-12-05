@@ -14,6 +14,9 @@ Assignment: https://docs.google.com/presentation/d/1F2JrAsH2LX3t35Qc7HZM6-Hygel5
 Order:
   1) Readme
   2) FunctionVariable - 
+// In this example, we're going to register a Particle.variable() with the cloud so that we can read brightness levels from the photoresistor.
+// We'll also register a Particle.function so that we can turn the LED on and off remotely.
+
   3) WebConnectedLED
   4) Boron_dbLED
   5) Boron_dbLED_FV
