@@ -25,3 +25,5 @@ Order:
 // At the same time, call on a different webserver to read the on/off button input
 
   5) Boron_dbLED_FV
+// Instead of calling to a webserver for the button status of an ON/OFF LED... Utilize Particle's built in function -- Particle.function() to turn on and off an LED from Particle's phone application.
+// Future works: Explore Particle's libraries for DHT sensors to utilize Particle.variable() to get a real-time sensor reading from Particle's app.
