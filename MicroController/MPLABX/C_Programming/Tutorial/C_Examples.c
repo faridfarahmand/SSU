@@ -1,9 +1,36 @@
+############################################################
 Tutorials: Good tutorials: http://www.tutorialspoint.com/cprogramming/c_constants.htm
-
+############################################################
 Online C compiler: http://www.tutorialspoint.com/compile_c_online.php
 no login needed. cannot save. Try this: >> gcc main.c -o demo -->a new demo file is generated. Just type >>demo to execute the program
+############################################################
+# LIST OF EXAMPLES: 
+/*** BASIC HELLO WORLD***/
+/*** Data Types ***/
+/*** ARRAYS ***/
+/*** ARRAYS AND STRINGS */
+/*** ARRAYS AND STRINGS...MORE */
+/*** NUMBER FORMAT */
+/*** MULTI DIMENTSIONAL ARRAY*/
+/*** USING FUNCTION*/
+/*** USING FUNCTION AND SWAP*/
+/*** LOOP RUNNING FOR EVER! ***/
+/*** IF-STATEMENT ***/
+/*** WHILE LOOP ***/
+/*** NESTED LOOP ***/
+/*** USING IF STATEMENT ***/
+/*** Get an INPUT Character ***/
+/*** Learn about different operators ***/
+/*** Check to see if the user entered a DIGIT ***/
+/*** USING SWITCH STATEMENT ***/
+/*** USING SWITCH STATEMENT AND RANDOM NUMBERS***/
+/*** Pointer with Argument***/
+/*** Pointer Example***/
+
+
 
 /*** BASIC HELLO WORLD***/
+############################################################
 #include <stdio.h>
 int main()
 {
@@ -13,6 +40,7 @@ return 0;
 }
 
 /*** Data Types ***/
+############################################################
 #include <stdio.h>
 
 int myinteger; /*just define an integer*/
@@ -34,6 +62,7 @@ return 0;
 }
 
 /*** ARRAYS ***/
+############################################################
 #include <stdio.h>
 
 float average; /*define a float*/
@@ -59,6 +88,7 @@ return 0;
 }
 
 /*** ARRAYS AND STRINGS */
+############################################################
 #include <stdio.h>
 #include <string.h> // note the header file
 
@@ -82,6 +112,7 @@ return 0;
 }
 
 /*** ARRAYS AND STRINGS...MORE */
+############################################################
 #include <stdio.h>
 #include <string.h> // note the header file
 
@@ -115,8 +146,8 @@ printf("The cell content %d \n", disp[0][1]);
 return 0;
 }
 
-
 /*** NUMBER FORMAT */
+############################################################
 #include<stdio.h>
 int x = 0x12;
 
@@ -133,12 +164,9 @@ printf("Octal: %o\n", 255);
 printf("Unsigned value: %u\n", 150);
 printf("Just print the percentage sign %%\n", 10);
 }
-
  
-
 /*** MULTI DIMENTSIONAL ARRAY*/
-​
-
+​############################################################
 #include <stdio.h>
 // Read this for more information: http://www.tutorialspoint.com/cprogramming/c_multi_dimensional_arrays.htm
 // Read this also: https://www.eskimo.com/~scs/cclass/int/sx9.html
@@ -164,7 +192,7 @@ return 0;
 }
 
 /*** USING FUNCTION*/
-
+############################################################
 #include<stdio.h>
 // function prototype, also called function declaration
 float square ( float x );
@@ -190,7 +218,7 @@ return ( p ) ;
 }
 
 /*** USING FUNCTION AND SWAP*/
-
+############################################################
 #include<stdio.h>
 // function prototype, also called function declaration
 
@@ -221,10 +249,8 @@ printf("\n values after swap a = %d and b = %d \n", *a, *b);
 
 }
 
-____________________
-
-
 /*** LOOP RUNNING FOR EVER! ***/
+############################################################
 #include <stdio.h>   
 int main () 
 {     
@@ -254,8 +280,8 @@ printf("Sum = %d", sum);
 return 0;
 }
 
-
 /*** IF-STATEMENT ***/
+############################################################
 #include <stdio.h>
 int main()
 {
@@ -272,9 +298,9 @@ printf("The if statement is easy.");
 return 0;
 }
 
- 
 
 /*** WHILE LOOP ***/
+############################################################
 #include <stdio.h>   
 int main () 
 {     /* local variable definition */    
@@ -289,6 +315,7 @@ return 0;
 }
 
 /*** NESTED LOOP ***/
+############################################################
 #include <stdio.h>   
 int main () 
 {     /* local variable definition */    
@@ -303,11 +330,8 @@ for(i = 2; i<100; i++) {
 return 0; 
 }
  
-
-____________________
-
 /*** USING IF STATEMENT ***/
-
+############################################################
 #include <stdio.h>
 int iTemperature = 88;
 int main()
@@ -342,7 +366,7 @@ return 0;
 }
 
 /*** Get an INPUT Character ***/
-
+############################################################
 #include <stdio.h>
 int main()
 {
@@ -359,8 +383,8 @@ if (cResponse == 'b')
 return 0;
 }
 
-/*** Learn about differernt operators ***/
-
+/*** Learn about different operators ***/
+############################################################
 #include <stdio.h>
 int main()
 {
@@ -388,7 +412,7 @@ printf("\nThank you\n");
 return 0;
 }
 /*** Check to see if the user entered a DIGIT ***/
-
+############################################################
 #include <stdio.h>
 #include <ctype.h>
 int main()
@@ -405,7 +429,7 @@ return 0;
 }
 
 /*** USING SWITCH STATEMENT ***/
-
+############################################################
 #include <stdio.h>
 #include <ctype.h>
 char cResponse = '\0';
@@ -429,7 +453,7 @@ return 0;
 }
 
 /*** USING SWITCH STATEMENT AND RANDOM NUMBERS***/
-
+############################################################
 #include <stdio.h>
 #include <ctype.h>
 #include<time.h>
@@ -437,9 +461,6 @@ return 0;
 int main()
 {
 int iRandomNum = 0;
-
- 
-
 
 srand(time(NULL));
 printf("\n Your REAL Random Number is %i", rand();
@@ -471,6 +492,7 @@ return 0;
 }
 
 /*** Pointer with Argument***/
+############################################################
 // pointers as arguments:
 #include <stdio.h>
 void increment_all (int* start, int* stop)
@@ -502,6 +524,7 @@ return 0;
 }
 
 /*** Pointer Example***/
+############################################################
 // more pointers
 #include <stdio.h>
 int main ()
