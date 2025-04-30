@@ -7,6 +7,10 @@ In this tutorial we demosntrate how to use MCC to configure the USART module. Wa
 https://youtu.be/vfWQTlpFnVw . 
 Many thanks to Mr. Diego King for creating this tutorial and tutorial video. 
 
+# Parts You Need to Complete This Lab
+* PIC18F Module
+* A Serial Interface Program - Such as PuTTy (https://www.putty.org/ )
+
 # Step 1. Create a Project w/ MCC
 Create a new XC8 project for the Curiosity Nano, ensuring "open MCC when finished" is checked. Allow MCC to open, and click through any notifications.
 
