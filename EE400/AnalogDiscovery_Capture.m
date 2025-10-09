@@ -1,5 +1,9 @@
-
-
+% THe furpose of this code is to capture dsata from Analog Discovery, save it in a CSV file 
+% then compare it with the simulated data using MATLAB. 
+% This is what you do: 
+% (1) Make sure you change the scope data values below according to your circuit
+% (2) Place your function in the designated place 
+% (3) Make sure the file name is correct
 
 %% Scope data (time base)
 t_scope_start = -2.00425;
@@ -8,6 +12,8 @@ dt_scope      = 25e-5;
 t_shift       = -1.3825;  % <-- WHEN THE SIGNAL START RISING
 
 V             = 1.847;       % pulse amplitude (V)
+tau           = 0.1;     % RC (s)
+
 % Load measured channel (2nd column)
 data    = readtable('OneCycle3.csv');
 %-----------------
@@ -20,8 +26,7 @@ t_scope = t_scope(1:N);
 y_scope = y_scope(1:N);
 
 %% Simulation parameters
-tau = 0.1;     % RC (s)
-V   = 1.847;       % pulse amplitude (V)
+
 t0  = 0.0;     % pulse start time (s) in the SIMULATED time frame
 Tp  = 1.0;     % pulse width (s)
 
@@ -31,16 +36,11 @@ t_sim = t_scope - t_scope_start;
 
 u = @(x) double(x >= 0);
 
-% RC response to rectangular pulse of width Tp starting at t0:
-
+% ------- YOUR FUNCTION GOES UERE --------
 y_sim = V * ( ...
-
-    (1 - exp(-(t_sim - t0)./tau)) .* u(t_sim - t0) ...                              % rise
-
+    (1 - exp(-(t_sim - t0)./tau)) .* u(t_sim - t0) ...     
   - ( (1 - exp(-(t_sim - t0 - Tp)./tau)).* u(t_sim - t0 - Tp) ) ... % decay
-
 );
-
 
 %% Alignment controls (adjust to make waveforms coincide)
 % Shift the scope time so its key edge aligns with the simulated t=0 reference.
