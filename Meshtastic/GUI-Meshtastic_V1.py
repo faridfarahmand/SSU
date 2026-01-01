@@ -4,7 +4,7 @@ EmergiNet - Resident Response Checker (GUI) using Meshtastic USB
 Tabs
 - RESPONSE: Connect/listen to Meshtastic on the SAME USB port (/dev/cu.usbserial-0001),
   extract FROM (fromId) from incoming packets, display Last FROM, and match to residents.csv.
-  Also shows a SMALL logo in the upper-right corner (RESPONSE tab only).
+  Shows a full-row logo at the top of the RESPONSE tab only.
 - NO_RESPONSE: Shows residents.csv entries not yet matched.
 - SEND: Send arbitrary text over the SAME open Meshtastic interface (multiple sends).
 - ALARM: Button "Hacienda 1" broadcasts xSiren!E1 over the SAME open Meshtastic interface.
@@ -18,7 +18,7 @@ Dependencies
 
 Files
 - residents.csv (first,last,device_id)
-- logo.png (optional, shown only on RESPONSE tab, scaled to small size)
+- haciendsLogo.png (optional, shown only on RESPONSE tab as a full-row banner)
 """
 
 import csv
@@ -66,9 +66,9 @@ READ_POLL_MS = 100
 MESHTASTIC_PORT = "/dev/cu.usbserial-0001"
 MESHTASTIC_CHANNEL_INDEX = 0
 
-# ---- Small logo (RESPONSE tab only) ----
-LOGO_PATH = "haciendsLogo.png"
-LOGO_SIZE_PX = 82  # small; try 24, 32, or 40
+# ---- Full-row logo (RESPONSE tab only) ----
+LOGO_PATH = "hacienda4.png"
+LOGO_SIZE_PX = 82  # logo height (px)
 
 
 def normalize_device_id(device_id: str) -> str:
@@ -129,8 +129,6 @@ def extract_from_id_from_packet(packet: dict) -> Optional[str]:
     """
     Meshtastic receive callback packet is typically a dict with keys such as:
       packet["fromId"] = "!9e9fc250"
-
-    We try a few common keys to be robust.
     """
     if not isinstance(packet, dict):
         return None
@@ -158,10 +156,10 @@ def extract_from_id_from_packet(packet: dict) -> Optional[str]:
     return None
 
 
-def load_logo_image(path: str, size_px: int):
+def load_logo_full_row(path: str, target_height: int):
     """
-    Forces the logo to be very small (size_px x size_px).
-    Shows only if file exists and Pillow is installed.
+    Load and scale logo to a fixed height, preserving aspect ratio.
+    Intended as a full-row banner (width expands visually via layout).
     """
     if not PIL_AVAILABLE:
         return None
@@ -169,7 +167,13 @@ def load_logo_image(path: str, size_px: int):
         return None
 
     img = Image.open(path).convert("RGBA")
-    img = img.resize((size_px, size_px), Image.LANCZOS)
+    w, h = img.size
+    if h <= 0:
+        return None
+
+    scale = target_height / float(h)
+    new_w = max(1, int(w * scale))
+    img = img.resize((new_w, target_height), Image.LANCZOS)
     return ImageTk.PhotoImage(img)
 
 
@@ -185,12 +189,12 @@ class App(tk.Tk):
 
         # Meshtastic interface (shared for receive + send + alarm)
         self.mesh_iface = None
-        self._subscribed = False  # pubsub subscription guard
+        self._subscribed = False
 
-        # Queue for thread-safe UI updates from meshtastic callbacks
+        # Queue for UI updates from meshtastic callbacks
         self.ui_queue: "queue.Queue[Tuple[str, str]]" = queue.Queue()
 
-        # Keep reference to logo image to avoid garbage collection
+        # Keep references for images
         self.logo_img = None
 
         self._build_ui()
@@ -222,14 +226,15 @@ class App(tk.Tk):
         self._build_alarm_tab()
 
     def _build_response_tab(self) -> None:
-        # ---- Small logo in upper-right (RESPONSE tab only) ----
-        logo_frame = ttk.Frame(self.tab_response)
-        logo_frame.pack(fill="x", padx=10, pady=(5, 0))
-        logo_frame.columnconfigure(0, weight=1)
+        # ---- Full-row logo (RESPONSE tab only) ----
+        logo_row = ttk.Frame(self.tab_response)
+        logo_row.pack(fill="x", padx=10, pady=(8, 4))
+        logo_row.columnconfigure(0, weight=1)
 
-        self.logo_img = load_logo_image(LOGO_PATH, LOGO_SIZE_PX)
+        self.logo_img = load_logo_full_row(LOGO_PATH, LOGO_SIZE_PX)
         if self.logo_img is not None:
-            ttk.Label(logo_frame, image=self.logo_img).grid(row=0, column=1, sticky="e")
+            logo_label = ttk.Label(logo_row, image=self.logo_img, anchor="center")
+            logo_label.grid(row=0, column=0, sticky="ew")
 
         controls = ttk.LabelFrame(self.tab_response, text="Controls")
         controls.pack(fill="x", padx=10, pady=10)
@@ -465,9 +470,7 @@ class App(tk.Tk):
             except Exception:
                 pass
 
-    #def _on_meshtastic_receive(self, packet, interface=None, topic=pub.AUTO_TOPIC):
     def _on_meshtastic_receive(self, packet, interface=None, topic=None):
-
         from_id = extract_from_id_from_packet(packet)
         if not from_id:
             return
