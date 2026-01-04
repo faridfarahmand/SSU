@@ -24,11 +24,19 @@
  *
  *  User Interaction:
  *  - The 5-way joystick (UP / DOWN / PRESS) is used to scroll messages.
- *  - Any intentional joystick press sends a JSON "RECEIVED" acknowledgment
- *    back to the originating Meshtastic node.
- *  - Startup logic prevents accidental transmission until the user physically
- *    presses the joystick.
- *  - Buttons A + B together clear the screen and message history.
+ *  - Any intentional joystick press sends a JSON "RECEIVED" acknowledgment.
+ *
+ *  IMPORTANT: False-Trigger Prevention (RECEIVED)
+ *  - Some systems can see brief LOW glitches on joystick pins (noise/ground bounce),
+ *    sometimes coinciding with radio/UART activity.
+ *  - To ensure RECEIVED is sent only when physically pressed:
+ *      1) We confirm the pin remains LOW for PRESS_CONFIRM_MS (debounce/filter).
+ *      2) We require a full release (back to HIGH) before re-arming the send.
+ *      3) ACK_LOCKOUT_MS still applies as a minimum spacing between sends.
+ *
+ *  Startup Safety:
+ *  - Previous joystick states are initialized in setup() to avoid a false "press"
+ *    immediately at boot.
  *
  *  Display:
  *  - Green text on black background.
@@ -40,15 +48,10 @@
  *  - Buzzer: Onboard Wio buzzer
  *  - Radio link: External Meshtastic node via UART (Serial1, 115200 baud)
  *
- *  Notes:
- *  - This code intentionally avoids JSON parsing libraries to remain lightweight.
- *  - All behavior is deterministic and event-driven.
- *
  *  Project:
  *  EmergiNet – Community Emergency Notification System
  *
  *****************************************************************************************/
-
 
 #include <TFT_eSPI.h>
 #include <SPI.h>
@@ -68,7 +71,6 @@ TFT_eSPI tft;
 // ---- Serial from Heltec Meshtastic ----
 #define MSG_SERIAL    Serial1
 #define BAUDRATE      115200   // Meshtastic default over UART
-
 
 // ---- Target Meshtastic node (replace with full ID that ends with 084c) ----
 const char* TARGET_NODE = "!9ea2084c";   // TODO: put your actual full node ID here
@@ -94,7 +96,7 @@ unsigned long lastToggle = 0;
 const unsigned long ALARM_MS  = 5000;   // beep duration for each new msg
 const unsigned long TOGGLE_MS = 250;    // beep on/off period
 
-// ---- 5-way PRESS debounce / edge detection ----
+// ---- 5-way edge detection + lockout (shared) ----
 int prevUp    = HIGH;
 int prevDown  = HIGH;
 int prevPress = HIGH;
@@ -106,16 +108,20 @@ const unsigned long ACK_LOCKOUT_MS = 400;
 char inbuf[MAX_LINE_LEN];
 int  inpos = 0;
 
-// ===== NEW: Multi-line block state for EmergiNet =====
+// ===== Multi-line block state for EmergiNet =====
 bool inEmergiNetBlock = false;
 unsigned long lastBlockLineAt = 0;
-const unsigned long BLOCK_TIMEOUT_MS = 600;  // gap that ends a block (tune if needed)
+const unsigned long BLOCK_TIMEOUT_MS = 1500;  // gap that ends a block (tune if needed)
 
-// ===== NEW: Siren state =====
+// ===== Siren state =====
 bool sirenActive = false;
 unsigned long sirenEndAt = 0;
 unsigned long sirenLastStepAt = 0;
 bool sirenHigh = false; // toggles tone freq
+
+// ===== NEW: stronger physical-press gating =====
+bool ackArmed = true;                       // only allow send when armed
+const unsigned long PRESS_CONFIRM_MS = 35;  // must remain LOW for this long to count
 
 // ------------------------------------------------------------------
 // Send "RECEIVED" message to specific Meshtastic node over Serial1
@@ -124,7 +130,14 @@ void sendReceivedMessage() {
   MSG_SERIAL.print("{\"FROM\":\"!9e9fc250\",\"text\":\"RECEIVED\"}\n");
 }
 
-// ===== NEW: Start siren for 15 seconds (re-triggers every time) =====
+// ===== NEW: confirm a physical press (filters noise spikes) =====
+bool confirmPressLow(int pin) {
+  if (digitalRead(pin) != LOW) return false;
+  delay(PRESS_CONFIRM_MS);
+  return (digitalRead(pin) == LOW);
+}
+
+// ===== Start siren for 15 seconds (re-triggers every time) =====
 void startSiren15s() {
   sirenActive = true;
   sirenEndAt = millis() + 15000UL;
@@ -132,8 +145,7 @@ void startSiren15s() {
   sirenHigh = false;
 }
 
-// ===== NEW: Update siren (call in loop) =====
-// Uses tone() if available; if not, you can replace with your own buzzer method.
+// ===== Update siren (call in loop) =====
 void updateSiren() {
   if (!sirenActive) return;
 
@@ -147,11 +159,24 @@ void updateSiren() {
 
   // Toggle between two tones to simulate an emergency siren
   if (now - sirenLastStepAt >= 180) {
-    sirenHigh = !sirenHigh;
+      sirenHigh = !sirenHigh;
     tone(PIN_BUZZER, sirenHigh ? 1200 : 700);
     sirenLastStepAt = now;
   }
 }
+
+// ===== NEW: short confirmation chime =====
+void playSendChime() {
+  // Simple two-tone chime
+  analogWrite(PIN_BUZZER, 180);
+  delay(80);
+  analogWrite(PIN_BUZZER, 0);
+  delay(40);
+  analogWrite(PIN_BUZZER, 220);
+  delay(120);
+  analogWrite(PIN_BUZZER, 0);
+}
+
 
 // ------------------------------------------------------------------
 // Clear all stored messages and the screen
@@ -169,15 +194,13 @@ void clearMessages() {
 
 // ------------------------------------------------------------------
 // Redraw screen with current messages and scrollIndex
-// Messages only, GREEN on BLACK, spacing/size like your snippet.
 // ------------------------------------------------------------------
 void renderScreen() {
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(TEXT_SIZE);
-  tft.setTextColor(TFT_GREEN, TFT_BLACK);   // GREEN text on BLACK
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
 
   if (totalMessages == 0) {
-    // Nothing to show yet
     return;
   }
 
@@ -202,44 +225,40 @@ void renderScreen() {
 
 // ------------------------------------------------------------------
 // Store a new message
-// Updated behavior:
-// - If a line contains "xSiren!E1", trigger siren (always).
-// - Display blocks:
-//    - Block starts when a line contains "EmergiNet"
-//    - Once started, all consecutive lines are accepted
-//    - Block ends on blank line or after timeout gap
+// - If line contains "xSiren!E1", trigger siren (always).
+// - Only display EmergiNet multi-line blocks.
 // ------------------------------------------------------------------
 void storeMessage(const char *msg) {
   if (msg == NULL) return;
 
-  // ===== RESTORED: Siren trigger (does NOT require EmergiNet) =====
+  // Siren trigger (does NOT require EmergiNet)
   if (strstr(msg, "xSiren!E1") != NULL) {
     startSiren15s();
-    // Do NOT return here; siren can occur alongside printing rules if needed.
   }
 
-  // If we receive a blank line, end the block and do not store it.
+  // Siren trigger only for this node
+  //if (strstr(msg, "xSiren!E1") != NULL && strstr(msg, "!433e287c") != NULL) {
+  //  startSiren15s();
+  //}
+
+
+  // Blank line ends EmergiNet block, not stored
   if (msg[0] == '\0') {
     inEmergiNetBlock = false;
     return;
   }
 
-  // Decide if this line should be accepted for display
   bool hasEmergiNet = (strstr(msg, "EmergiNet") != NULL);
 
   if (!inEmergiNetBlock) {
-    // Not currently in a block: only accept if this line starts a block
     if (!hasEmergiNet) {
-      // Not accepted for display; also don't start normal beep
       alarmActive = false;
       analogWrite(PIN_BUZZER, 0);
       return;
     }
-    // Start new block
     inEmergiNetBlock = true;
   }
 
-  // Accepted line (part of an EmergiNet block)
   lastBlockLineAt = millis();
 
   strncpy(messages[writeIndex], msg, MAX_LINE_LEN - 1);
@@ -252,9 +271,8 @@ void storeMessage(const char *msg) {
 
   int visible  = (totalMessages > VISIBLE_LINES) ? VISIBLE_LINES : totalMessages;
   int maxStart = (totalMessages > visible) ? (totalMessages - visible) : 0;
-  scrollIndex  = maxStart;  // always jump to newest window
+  scrollIndex  = maxStart;
 
-  // Normal beep for accepted EmergiNet lines (siren has priority in loop)
   alarmActive  = true;
   alarmEndAt   = millis() + ALARM_MS;
   lastToggle   = 0;
@@ -270,7 +288,7 @@ void handleUart() {
     char c = MSG_SERIAL.read();
 
     if (c == '\r') {
-      continue;   // ignore CR
+      continue;
     }
 
     if (c == '\n') {
@@ -279,14 +297,13 @@ void handleUart() {
         storeMessage(inbuf);
         inpos = 0;
       } else {
-        // Blank line received -> end any active EmergiNet block
+        // Blank line
         storeMessage("");
       }
     } else {
       if (inpos < (MAX_LINE_LEN - 1)) {
         inbuf[inpos++] = c;
       }
-      // extra chars beyond MAX_LINE_LEN-1 are dropped
     }
   }
 }
@@ -317,10 +334,10 @@ void scrollDown() {
 // ------------------------------------------------------------------
 void setup() {
   tft.begin();
-  tft.setRotation(3);              // landscape
+  tft.setRotation(3);
 
   pinMode(PIN_BUZZER, OUTPUT);
-  analogWrite(PIN_BUZZER, 0);      // buzzer off
+  analogWrite(PIN_BUZZER, 0);
 
   pinMode(PIN_5S_UP,     INPUT_PULLUP);
   pinMode(PIN_5S_DOWN,   INPUT_PULLUP);
@@ -330,18 +347,15 @@ void setup() {
   pinMode(PIN_BTN_A,     INPUT_PULLUP);
   pinMode(PIN_BTN_B,     INPUT_PULLUP);
 
-  MSG_SERIAL.begin(BAUDRATE);
-
-    // ---- NEW: Initialize 5-way switch previous states to avoid false press on startup ----
+  // ===== NEW: Initialize previous joystick states to prevent startup false press =====
   prevUp    = digitalRead(PIN_5S_UP);
   prevDown  = digitalRead(PIN_5S_DOWN);
   prevPress = digitalRead(PIN_5S_PRESS);
-
-  // Optional: prime the lockout timer so even a transient won't send
   lastAckAt = millis();
 
+  MSG_SERIAL.begin(BAUDRATE);
 
-  clearMessages();                 // clear buffer + screen at power-up
+  clearMessages();
 }
 
 // ------------------------------------------------------------------
@@ -357,44 +371,58 @@ void loop() {
     }
   }
 
-  // ===== RESTORED: Siren handler (priority) =====
+  // Siren handler (priority)
   updateSiren();
 
-// 2) Scroll with 5 way switch (PRESSSED) + send RECEIVED
-// ---- Any of UP / DOWN / PRESS sends exactly one "RECEIVED" ----
-int curUp    = digitalRead(PIN_5S_UP);
-int curDown  = digitalRead(PIN_5S_DOWN);
-int curPress = digitalRead(PIN_5S_PRESS);
+  // 2) Scroll with 5-way switch + send RECEIVED (ONLY on confirmed physical press)
+  int curUp    = digitalRead(PIN_5S_UP);
+  int curDown  = digitalRead(PIN_5S_DOWN);
+  int curPress = digitalRead(PIN_5S_PRESS);
 
-// Detect a NEW press (HIGH -> LOW) on any of the three
-bool newEvent =
-  (prevUp    == HIGH && curUp    == LOW) ||
-  (prevDown  == HIGH && curDown  == LOW) ||
-  (prevPress == HIGH && curPress == LOW);
+  // Detect a NEW press (HIGH -> LOW) on any of the three
+  bool newEvent =
+    (prevUp    == HIGH && curUp    == LOW) ||
+    (prevDown  == HIGH && curDown  == LOW) ||
+    (prevPress == HIGH && curPress == LOW);
 
-if (newEvent) {
-  unsigned long now = millis();
-  if (now - lastAckAt >= ACK_LOCKOUT_MS) {
-    sendReceivedMessage();
-    lastAckAt = now;
+  // ===== NEW: Physical-press confirmation + re-arm requirement =====
+  if (newEvent && ackArmed) {
+    bool realPress =
+      (prevUp    == HIGH && curUp    == LOW && confirmPressLow(PIN_5S_UP)) ||
+      (prevDown  == HIGH && curDown  == LOW && confirmPressLow(PIN_5S_DOWN)) ||
+      (prevPress == HIGH && curPress == LOW && confirmPressLow(PIN_5S_PRESS));
+
+    if (realPress) {
+      unsigned long now = millis();
+      if (now - lastAckAt >= ACK_LOCKOUT_MS) {
+        sendReceivedMessage();
+        //playSendChime();  
+        lastAckAt = now;
+        ackArmed = false; // disarm until joystick is released
+      }
+    }
   }
-}
 
-// Update previous states
-prevUp    = curUp;
-prevDown  = curDown;
-prevPress = curPress;
+  // Re-arm only after all relevant inputs return HIGH (released)
+  if (!ackArmed && curUp == HIGH && curDown == HIGH && curPress == HIGH) {
+    ackArmed = true;
+  }
 
-// Keep scrolling behavior (only when held low is fine)
-if (curUp == LOW)   scrollUp();
-if (curDown == LOW) scrollDown();
+  // Update previous states
+  prevUp    = curUp;
+  prevDown  = curDown;
+  prevPress = curPress;
+
+  // Keep scrolling behavior (only when held low is fine)
+  if (curUp == LOW)   scrollUp();
+  if (curDown == LOW) scrollDown();
 
   // 4) Clear screen and message history when A + B are pressed together
   if (digitalRead(PIN_BTN_A) == LOW && digitalRead(PIN_BTN_B) == LOW) {
     delay(100); // debounce
     if (digitalRead(PIN_BTN_A) == LOW && digitalRead(PIN_BTN_B) == LOW) {
       clearMessages();
-      delay(300); // avoid retrigger
+      delay(300);
     }
   }
 
