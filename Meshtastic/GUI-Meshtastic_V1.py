@@ -18,7 +18,7 @@ Dependencies
 
 Files
 - residents.csv (first,last,device_id)
-- haciendsLogo.png (optional, shown only on RESPONSE tab as a full-row banner)
+- hacienda4.png (optional, shown only on RESPONSE tab as a full-row banner)
 """
 
 import csv
@@ -125,33 +125,75 @@ def load_residents(csv_path: str) -> Tuple[Dict[str, Resident], List[str]]:
     return mapping, errors
 
 
-def extract_from_id_from_packet(packet: dict) -> Optional[str]:
+def extract_from_id_from_packet(packet) -> Optional[str]:
     """
-    Meshtastic receive callback packet is typically a dict with keys such as:
-      packet["fromId"] = "!9e9fc250"
+    Robustly extract sender ID from Meshtastic receive payloads.
+    Handles dict payloads and object payloads (depending on meshtastic version and packet type).
     """
-    if not isinstance(packet, dict):
+
+    def _get_from_mapping(d: dict) -> Optional[str]:
+        # Direct keys (common)
+        for k in ("fromId", "from", "from_id", "FROM"):
+            v = d.get(k)
+            if v:
+                return str(v).strip()
+
+        # Common nested container
+        inner = d.get("packet")
+        if isinstance(inner, dict):
+            for k in ("fromId", "from"):
+                v = inner.get(k)
+                if v:
+                    return str(v).strip()
+
+        # Another nesting some versions use
+        decoded = d.get("decoded")
+        if isinstance(decoded, dict):
+            inner2 = decoded.get("packet")
+            if isinstance(inner2, dict):
+                for k in ("fromId", "from"):
+                    v = inner2.get(k)
+                    if v:
+                        return str(v).strip()
+
         return None
 
-    candidates = [
-        packet.get("fromId"),
-        packet.get("from"),
-        packet.get("from_id"),
-        packet.get("FROM"),
-    ]
+    # Dict-style
+    if isinstance(packet, dict):
+        return _get_from_mapping(packet)
 
-    for v in candidates:
-        if v is None:
-            continue
-        s = str(v).strip()
-        if s:
-            return s
+    # Object-style
+    try:
+        for attr in ("fromId", "from_id", "from"):
+            if hasattr(packet, attr):
+                v = getattr(packet, attr)
+                if v:
+                    return str(v).strip()
 
-    inner = packet.get("packet")
-    if isinstance(inner, dict):
-        v = inner.get("fromId") or inner.get("from")
-        if v:
-            return str(v).strip()
+        # Try __dict__ if present
+        if hasattr(packet, "__dict__"):
+            d = packet.__dict__
+            if isinstance(d, dict):
+                got = _get_from_mapping(d)
+                if got:
+                    return got
+
+        # Last resort: parse string representation
+        s = str(packet)
+        for token in ("fromId='", 'fromId="', "fromId:"):
+            idx = s.find(token)
+            if idx != -1:
+                tail = s[idx + len(token):]
+                for stop in ("'", '"', " ", ",", "}"):
+                    j = tail.find(stop)
+                    if j != -1:
+                        tail = tail[:j]
+                        break
+                tail = tail.strip()
+                if tail:
+                    return tail
+    except Exception:
+        pass
 
     return None
 
@@ -471,10 +513,15 @@ class App(tk.Tk):
                 pass
 
     def _on_meshtastic_receive(self, packet, interface=None, topic=None):
-        from_id = extract_from_id_from_packet(packet)
-        if not from_id:
-            return
-        self.ui_queue.put(("FROM", from_id))
+        try:
+            from_id = extract_from_id_from_packet(packet)
+            if from_id:
+                self.ui_queue.put(("FROM", from_id))
+            else:
+                # Debug so you can see it is still receiving traffic even if no fromId is found
+                self.ui_queue.put(("DEBUG", f"Received packet but no fromId found (type={type(packet)})"))
+        except Exception as e:
+            self.ui_queue.put(("DEBUG", f"Receive handler error: {e}"))
 
     def _process_ui_queue(self) -> None:
         try:
@@ -483,6 +530,8 @@ class App(tk.Tk):
                 if kind == "FROM":
                     self.last_from_var.set(f"Last FROM: {payload}")
                     self._handle_from_value(payload, source="meshtastic")
+                elif kind == "DEBUG":
+                    self.status_var.set(payload)
         except queue.Empty:
             pass
 
@@ -584,3 +633,4 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     App().mainloop()
+
