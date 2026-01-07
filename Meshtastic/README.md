@@ -22,3 +22,9 @@
   - Charging state
   - Firmware/software version
 
+---
+
+### Further Research 
+- Meshcore: https://www.youtube.com/watch?v=ABbZYXMr8PM 
+- Meshtastic Simulation Tool 
+
