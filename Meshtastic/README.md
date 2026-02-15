@@ -7,6 +7,11 @@
   `/Users/farid/Documents/Arduino/Wio_Meshtastic_RX_Buz_working`
 
 ---
+### Useful Toools
+- Some https://www.scadacore.com/tools/rf-path/rf-line-of-sight/
+- https://www.gps-coordinates.net/
+
+---
 
 ### Known Issues (Current Bugs)
 - Some units transmit a **RECEIVED** message immediately on startup.
