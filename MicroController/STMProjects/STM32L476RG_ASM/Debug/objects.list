@@ -1,0 +1,3 @@
+"./Src/main.o"
+"./Src/syscalls_stub.o"
+"./Startup/startup_stm32l476rgtx.o"
