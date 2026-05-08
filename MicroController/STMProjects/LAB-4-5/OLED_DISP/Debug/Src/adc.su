@@ -1,0 +1,4 @@
+../Src/adc.c:8:13:adc_delay	16	static
+../Src/adc.c:14:6:adc1_pa0_init	8	static
+../Src/adc.c:78:10:adc1_read	4	static
+../Src/adc.c:94:10:adc_to_millivolts	16	static

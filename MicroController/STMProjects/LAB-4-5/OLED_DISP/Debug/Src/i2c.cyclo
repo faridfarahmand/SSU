@@ -1,0 +1,5 @@
+../Src/i2c.c:5:12:wait_until_set	3
+../Src/i2c.c:16:12:wait_while_set	3
+../Src/i2c.c:27:6:i2c1_init	1
+../Src/i2c.c:51:5:i2c1_write	9
+../Src/i2c.c:93:5:i2c1_write_byte	1
