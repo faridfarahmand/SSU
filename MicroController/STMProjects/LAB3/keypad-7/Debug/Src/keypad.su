@@ -1,0 +1,4 @@
+../Src/keypad.c:19:13:KEYPAD_SetAllRowsHigh	8	static
+../Src/keypad.c:27:13:KEYPAD_SetSingleRowLow	16	static
+../Src/keypad.c:33:6:KEYPAD_Init	8	static
+../Src/keypad.c:49:9:KEYPAD_GetIndex	16	static

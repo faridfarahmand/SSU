@@ -1,0 +1,5 @@
+../Src/sevenseg.c:23:6:SevenSeg_Init	1
+../Src/sevenseg.c:36:6:SevenSeg_Clear	1
+../Src/sevenseg.c:41:6:SevenSeg_DisplayRaw	1
+../Src/sevenseg.c:51:6:SevenSeg_DisplayDigit	2
+../Src/sevenseg.c:63:6:SevenSeg_DisplayChar	17
