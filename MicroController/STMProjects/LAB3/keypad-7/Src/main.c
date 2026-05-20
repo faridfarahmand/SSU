@@ -1,42 +1,91 @@
+#include "gpio.h"
 #include "keypad.h"
 #include "sevenseg.h"
-#include <stdint.h>
 
-/*
- * Common-anode raw patterns for PB0..PB6
- * bit0=a, bit1=b, ..., bit6=g
- */
-static void DisplayHex(uint8_t value)
+#define CODE_LENGTH 4U
+
+static const char correctCode[CODE_LENGTH] = { 'A', '5', '2', 'D' };
+
+static void DelayMs(volatile uint32_t ms)
 {
-    static const uint8_t hexPattern[16] =
+    volatile uint32_t i;
+
+    while (ms--)
     {
-        0x40U, /* 0 */
-        0x79U, /* 1 */
-        0x24U, /* 2 */
-        0x30U, /* 3 */
-        0x19U, /* 4 */
-        0x12U, /* 5 */
-        0x02U, /* 6 */
-        0x78U, /* 7 */
-        0x00U, /* 8 */
-        0x10U, /* 9 */
-        0x08U, /* A */
-        0x03U, /* b */
-        0x46U, /* C */
-        0x21U, /* d */
-        0x06U, /* E */
-        0x0EU  /* F */
+        /* Rough delay for STM32L476RG running at default clock.
+           Adjust 3200 if you want faster/slower timing. */
+        for (i = 0U; i < 3200U; i++)
+        {
+            __NOP();
+        }
+    }
+}
+
+static uint8_t IsCodeCorrect(const char *entered)
+{
+    uint8_t i;
+
+    for (i = 0U; i < CODE_LENGTH; i++)
+    {
+        if (entered[i] != correctCode[i])
+        {
+            return 0U;
+        }
+    }
+
+    return 1U;
+}
+
+static uint8_t IsAllowedCodeKey(char key)
+{
+    if ((key >= '0') && (key <= '9'))
+    {
+        return 1U;
+    }
+
+    if ((key >= 'A') && (key <= 'D'))
+    {
+        return 1U;
+    }
+
+    return 0U;
+}
+
+static void RunCircleAnimation(void)
+{
+    /* Common-anode raw patterns for one outer segment ON at a time.
+       bit0=a, bit1=b, bit2=c, bit3=d, bit4=e, bit5=f, bit6=g
+       In common-anode, 0 = ON and 1 = OFF. */
+    static const uint8_t circleFrames[6] =
+    {
+        0x7EU, /* a */
+        0x7DU, /* b */
+        0x7BU, /* c */
+        0x77U, /* d */
+        0x6FU, /* e */
+        0x5FU  /* f */
     };
 
-    if (value < 16U)
+    uint8_t loop;
+    uint8_t frame;
+
+    for (loop = 0U; loop < 4U; loop++)
     {
-        SevenSeg_DisplayRaw(hexPattern[value]);
+        for (frame = 0U; frame < 6U; frame++)
+        {
+            SevenSeg_DisplayRaw(circleFrames[frame]);
+            DelayMs(50U);
+        }
     }
+
+    SevenSeg_Clear();
 }
 
 int main(void)
 {
-    uint8_t idx;
+    char key;
+    char enteredCode[CODE_LENGTH];
+    uint8_t enteredCount = 0U;
 
     KEYPAD_Init();
     SevenSeg_Init();
@@ -44,11 +93,45 @@ int main(void)
 
     while (1)
     {
-        idx = KEYPAD_GetIndex();
+        key = KEYPAD_GetKey();
 
-        if (idx != 0xFFU)
+        if (key == '\0')
         {
-            DisplayHex(idx);
+            continue;
+        }
+
+        /* Always show the pressed key first */
+        SevenSeg_DisplayChar(key);
+
+        if (key == '#')
+        {
+            enteredCount = 0U;
+            SevenSeg_Clear();
+            continue;
+        }
+
+        if (key == '*')
+        {
+            if ((enteredCount == CODE_LENGTH) && (IsCodeCorrect(enteredCode) != 0U))
+            {
+                RunCircleAnimation();
+            }
+            else
+            {
+                /* Wrong code -> show dash briefly */
+                SevenSeg_DisplayChar('*');
+                DelayMs(300U);
+                SevenSeg_Clear();
+            }
+
+            enteredCount = 0U;
+            continue;
+        }
+
+        if ((IsAllowedCodeKey(key) != 0U) && (enteredCount < CODE_LENGTH))
+        {
+            enteredCode[enteredCount] = key;
+            enteredCount++;
         }
     }
 }
