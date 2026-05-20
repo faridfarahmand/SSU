@@ -16,62 +16,151 @@ static const uint8_t colPins[4] =
     KEYPAD_COL3_PIN
 };
 
-static void KEYPAD_SetAllRowsHigh(void)
+static void KEYPAD_AllColumnsLow(void)
 {
-    GPIO_WritePin(KEYPAD_PORT, rowPins[0], GPIO_PIN_SET);
-    GPIO_WritePin(KEYPAD_PORT, rowPins[1], GPIO_PIN_SET);
-    GPIO_WritePin(KEYPAD_PORT, rowPins[2], GPIO_PIN_SET);
-    GPIO_WritePin(KEYPAD_PORT, rowPins[3], GPIO_PIN_SET);
+    GPIO_WritePin(KEYPAD_PORT, colPins[0], GPIO_PIN_RESET);
+    GPIO_WritePin(KEYPAD_PORT, colPins[1], GPIO_PIN_RESET);
+    GPIO_WritePin(KEYPAD_PORT, colPins[2], GPIO_PIN_RESET);
+    GPIO_WritePin(KEYPAD_PORT, colPins[3], GPIO_PIN_RESET);
 }
 
-static void KEYPAD_SetSingleRowLow(uint8_t row)
+static void KEYPAD_SetColumnHigh(uint8_t col)
 {
-    KEYPAD_SetAllRowsHigh();
-    GPIO_WritePin(KEYPAD_PORT, rowPins[row], GPIO_PIN_RESET);
+    KEYPAD_AllColumnsLow();
+    GPIO_WritePin(KEYPAD_PORT, colPins[col], GPIO_PIN_SET);
 }
 
 void KEYPAD_Init(void)
 {
-    GPIO_InitPin(KEYPAD_PORT, rowPins[0], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
-    GPIO_InitPin(KEYPAD_PORT, rowPins[1], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
-    GPIO_InitPin(KEYPAD_PORT, rowPins[2], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
-    GPIO_InitPin(KEYPAD_PORT, rowPins[3], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
+    /* Rows = input pull-down */
+    GPIO_InitPin(KEYPAD_PORT, rowPins[0], GPIO_MODE_INPUT, GPIO_PULL_DOWN);
+    GPIO_InitPin(KEYPAD_PORT, rowPins[1], GPIO_MODE_INPUT, GPIO_PULL_DOWN);
+    GPIO_InitPin(KEYPAD_PORT, rowPins[2], GPIO_MODE_INPUT, GPIO_PULL_DOWN);
+    GPIO_InitPin(KEYPAD_PORT, rowPins[3], GPIO_MODE_INPUT, GPIO_PULL_DOWN);
 
-    GPIO_InitPin(KEYPAD_PORT, colPins[0], GPIO_MODE_INPUT, GPIO_PULL_UP);
-    GPIO_InitPin(KEYPAD_PORT, colPins[1], GPIO_MODE_INPUT, GPIO_PULL_UP);
-    GPIO_InitPin(KEYPAD_PORT, colPins[2], GPIO_MODE_INPUT, GPIO_PULL_UP);
-    GPIO_InitPin(KEYPAD_PORT, colPins[3], GPIO_MODE_INPUT, GPIO_PULL_UP);
+    /* Columns = output */
+    GPIO_InitPin(KEYPAD_PORT, colPins[0], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
+    GPIO_InitPin(KEYPAD_PORT, colPins[1], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
+    GPIO_InitPin(KEYPAD_PORT, colPins[2], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
+    GPIO_InitPin(KEYPAD_PORT, colPins[3], GPIO_MODE_OUTPUT, GPIO_NO_PULL);
 
-    KEYPAD_SetAllRowsHigh();
+    KEYPAD_AllColumnsLow();
 }
 
-/* returns 0..15, or 0xFF if no key */
-uint8_t KEYPAD_GetIndex(void)
+char KEYPAD_GetKey(void)
 {
-    uint8_t row;
-    uint8_t col;
-
-    for (row = 0U; row < 4U; row++)
+    while (1)
     {
-        KEYPAD_SetSingleRowLow(row);
+        /* Column 0 -> 1,4,7,* */
+        KEYPAD_SetColumnHigh(0U);
 
-        for (col = 0U; col < 4U; col++)
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET)
         {
-            if (GPIO_ReadPin(KEYPAD_PORT, colPins[col]) == GPIO_PIN_RESET)
-            {
-                uint8_t index = (uint8_t)(row * 4U + col);
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '1';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '4';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '7';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '*';
+        }
 
-                while (GPIO_ReadPin(KEYPAD_PORT, colPins[col]) == GPIO_PIN_RESET)
-                {
-                    /* block until release */
-                }
+        /* Column 1 -> 2,5,8,0 */
+        KEYPAD_SetColumnHigh(1U);
 
-                KEYPAD_SetAllRowsHigh();
-                return index;
-            }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '2';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '5';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '8';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '0';
+        }
+
+        /* Column 2 -> 3,6,9,# */
+        KEYPAD_SetColumnHigh(2U);
+
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '3';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '6';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '9';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return '#';
+        }
+
+        /* Column 3 -> A,B,C,D */
+        KEYPAD_SetColumnHigh(3U);
+
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[0]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return 'A';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[1]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return 'B';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[2]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return 'C';
+        }
+        if (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET)
+        {
+            while (GPIO_ReadPin(KEYPAD_PORT, rowPins[3]) == GPIO_PIN_SET) {}
+            KEYPAD_AllColumnsLow();
+            return 'D';
         }
     }
-
-    KEYPAD_SetAllRowsHigh();
-    return 0xFFU;
 }
