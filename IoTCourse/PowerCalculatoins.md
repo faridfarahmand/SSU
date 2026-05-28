@@ -227,7 +227,7 @@ For your own IoT project, calculate:
 
 ---
 
-# Suggested Student Questions
+# Answer the following questions: 
 
 * What happens if the transmission interval changes from 30 minutes to 5 minutes?
 * What happens if the WiFi transmission takes longer?
@@ -237,9 +237,8 @@ For your own IoT project, calculate:
 
 ---
 
-# License
-
-Educational use encouraged.
+# Version 
+Dr. Farid Farahmand - May 2025
 
 ```
 ```
