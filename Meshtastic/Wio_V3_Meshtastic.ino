@@ -53,13 +53,17 @@
  *
  ****************************************************************************************
  *  Updates in this version:
- *  - External siren on D7 using simple HIGH/LOW toggling (NO tone)
+ *  - External siren on D2 using simple HIGH/LOW toggling (NO tone)
  *      Total: 10 seconds
  *      Pattern: 1.0 sec ON, 0.5 sec OFF
  *      Retriggerable: each "xSiren!E1" restarts the 10-second pattern
  *  - Removed old tone/noTone siren code
+ *  - Added Revision number at the startup
  *  - "RECEIVED" ACK is sent as plain text (works with Meshtastic serial.mode=TEXTMSG)
  *
+ *****************************************************************************************/
+/*****************************************************************************************
+ *  EmergiNet – Wio Terminal Meshtastic Receiver
  *****************************************************************************************/
 
 #include <TFT_eSPI.h>
@@ -78,13 +82,14 @@ TFT_eSPI tft;
 #define PIN_BTN_B     WIO_KEY_B
 #define PIN_BTN_C     WIO_KEY_C
 
-#define EX_BUZ_PIN    D7   // External siren control pin on Wio Terminal
+#define EX_BUZ_PIN    D2   // External buzzer/siren pin, changed from D7 to D2
 
 // ---- Serial from Heltec Meshtastic ----
 #define MSG_SERIAL    Serial1
-#define BAUDRATE      115200   // Meshtastic default over UART
+#define BAUDRATE      115200
 
-// ---- Target Meshtastic node (optional; not used in TEXTMSG mode) ----
+#define FWVERSION    "Version 1.4"
+
 const char* TARGET_NODE = "!9ea2084c";
 
 // ---- Message buffer ----
@@ -92,21 +97,24 @@ const int MAX_LINES    = 30;
 const int MAX_LINE_LEN = 120;
 
 char messages[MAX_LINES][MAX_LINE_LEN];
-int totalMessages = 0;          // number of stored messages (0..MAX_LINES)
-int writeIndex    = 0;          // circular write index
-int scrollIndex   = 0;          // index of first visible message
+int totalMessages = 0;
+int writeIndex    = 0;
+int scrollIndex   = 0;
+
+// ---- Message numbering ----
+int messageNumber = 0;
 
 // ---- Display layout ----
 const int TEXT_SIZE     = 2;
 const int LINE_HEIGHT   = 22;
 const int VISIBLE_LINES = 10;
 
-// ---- Buzzer / normal alert beep for new displayed lines ----
+// ---- Buzzer / normal alert beep ----
 bool alarmActive         = false;
 unsigned long alarmEndAt = 0;
 unsigned long lastToggle = 0;
-const unsigned long ALARM_MS  = 5000;   // beep duration for each new displayed line
-const unsigned long TOGGLE_MS = 250;    // beep on/off period
+const unsigned long ALARM_MS  = 5000;
+const unsigned long TOGGLE_MS = 250;
 
 // ---- 5-way edge detection + lockout ----
 int prevUp    = HIGH;
@@ -123,24 +131,22 @@ int  inpos = 0;
 // ===== Multi-line block state for EmergiNet =====
 bool inEmergiNetBlock = false;
 unsigned long lastBlockLineAt = 0;
-const unsigned long BLOCK_TIMEOUT_MS = 1500;  // gap that ends a block
+const unsigned long BLOCK_TIMEOUT_MS = 1500;
 
 // ===== Stronger physical-press gating =====
-bool ackArmed = true;                       // only allow send when armed
-const unsigned long PRESS_CONFIRM_MS = 35;  // must remain LOW for this long to count
+bool ackArmed = true;
+const unsigned long PRESS_CONFIRM_MS = 35;
 
-// ===== External siren on D7 (simple HIGH/LOW toggling) =====
+// ===== External siren on D2 =====
 bool extSirenActive = false;
 unsigned long extSirenStartAt = 0;
 unsigned long extSirenNextToggleAt = 0;
 bool extSirenIsHigh = false;
 
-const unsigned long EXT_SIREN_TOTAL_MS = 10000UL; // 10 seconds total
-const unsigned long EXT_SIREN_ON_MS    = 1000UL;  // 1.0 sec ON
-const unsigned long EXT_SIREN_OFF_MS   = 500UL;   // 0.5 sec OFF
+const unsigned long EXT_SIREN_TOTAL_MS = 10000UL;
+const unsigned long EXT_SIREN_ON_MS    = 1000UL;
+const unsigned long EXT_SIREN_OFF_MS   = 500UL;
 
-// ------------------------------------------------------------------
-// Send "RECEIVED" message back over Serial1 (TEXTMSG mode expects plain text)
 // ------------------------------------------------------------------
 void sendReceivedMessage() {
   MSG_SERIAL.print("RECEIVED\n");
@@ -150,15 +156,15 @@ void helpMessages() {
   MSG_SERIAL.print("HELP!\n");
 }
 
-// Confirm a physical press (filters noise spikes)
-// NOTE: This uses a short delay; usually OK, but keep it short.
 bool confirmPressLow(int pin) {
   if (digitalRead(pin) != LOW) return false;
   delay(PRESS_CONFIRM_MS);
   return (digitalRead(pin) == LOW);
 }
 
-// ===== External siren controls =====
+// ------------------------------------------------------------------
+// External siren controls
+// ------------------------------------------------------------------
 void startExternalSiren10s() {
   extSirenActive = true;
   extSirenStartAt = millis();
@@ -180,18 +186,93 @@ void updateExternalSiren() {
 
   unsigned long now = millis();
 
-  // Stop after total duration
   if (now - extSirenStartAt >= EXT_SIREN_TOTAL_MS) {
     stopExternalSiren();
     return;
   }
 
-  // Toggle on schedule
   if ((long)(now - extSirenNextToggleAt) >= 0) {
     extSirenIsHigh = !extSirenIsHigh;
     digitalWrite(EX_BUZ_PIN, extSirenIsHigh ? HIGH : LOW);
 
     extSirenNextToggleAt = now + (extSirenIsHigh ? EXT_SIREN_ON_MS : EXT_SIREN_OFF_MS);
+  }
+}
+
+// ------------------------------------------------------------------
+// Add one display line to circular buffer
+// ------------------------------------------------------------------
+void addDisplayLine(const char *line) {
+  strncpy(messages[writeIndex], line, MAX_LINE_LEN - 1);
+  messages[writeIndex][MAX_LINE_LEN - 1] = '\0';
+
+  writeIndex = (writeIndex + 1) % MAX_LINES;
+
+  if (totalMessages < MAX_LINES) {
+    totalMessages++;
+  }
+}
+
+// ------------------------------------------------------------------
+// Wrap long messages so they do not overlap on the TFT
+// ------------------------------------------------------------------
+int maxCharsPerDisplayLine() {
+  int charWidth = 6 * TEXT_SIZE;
+  int maxChars = tft.width() / charWidth;
+
+  if (maxChars < 10) maxChars = 10;
+  if (maxChars > MAX_LINE_LEN - 1) maxChars = MAX_LINE_LEN - 1;
+
+  return maxChars;
+}
+
+void addWrappedMessage(const char *text) {
+  int maxChars = maxCharsPerDisplayLine();
+  int len = strlen(text);
+  int pos = 0;
+  bool firstLine = true;
+
+  while (pos < len) {
+    char out[MAX_LINE_LEN];
+
+    int available = maxChars;
+    if (!firstLine) available -= 2;   // room for continuation indent
+
+    if (available < 5) available = 5;
+
+    int remaining = len - pos;
+    int take = (remaining > available) ? available : remaining;
+
+    // Try to break at a space if possible
+    if (remaining > available) {
+      int lastSpace = -1;
+      for (int i = 0; i < take; i++) {
+        if (text[pos + i] == ' ') lastSpace = i;
+      }
+      if (lastSpace > 5) {
+        take = lastSpace;
+      }
+    }
+
+    if (firstLine) {
+      strncpy(out, text + pos, take);
+      out[take] = '\0';
+    } else {
+      out[0] = ' ';
+      out[1] = ' ';
+      strncpy(out + 2, text + pos, take);
+      out[take + 2] = '\0';
+    }
+
+    addDisplayLine(out);
+
+    pos += take;
+
+    while (text[pos] == ' ') {
+      pos++;
+    }
+
+    firstLine = false;
   }
 }
 
@@ -202,18 +283,15 @@ void clearMessages() {
   for (int i = 0; i < MAX_LINES; i++) {
     messages[i][0] = '\0';
   }
+
   totalMessages = 0;
   writeIndex    = 0;
   scrollIndex   = 0;
+  messageNumber = 0;   // reset numbering when CLEAR is pressed
 
   tft.fillScreen(TFT_BLACK);
 }
 
-// ------------------------------------------------------------------
-// Redraw screen with current messages and scrollIndex
-// NOTE: This is the original rendering approach (linear indexing).
-// If you later want perfect ordering after wrap-around, we can swap in
-// the corrected ring-buffer rendering.
 // ------------------------------------------------------------------
 void renderScreen() {
   tft.fillScreen(TFT_BLACK);
@@ -233,6 +311,7 @@ void renderScreen() {
   for (int i = 0; i < visible; i++) {
     int idx = scrollIndex + i;
     if (idx >= totalMessages) break;
+
     tft.setCursor(0, y);
     tft.println(messages[idx]);
     y += LINE_HEIGHT;
@@ -241,51 +320,50 @@ void renderScreen() {
 
 // ------------------------------------------------------------------
 // Store a new message
-// - If line contains "xSiren!E1", trigger external siren (always).
-// - Only display EmergiNet multi-line blocks.
 // ------------------------------------------------------------------
 void storeMessage(const char *msg) {
   if (msg == NULL) return;
 
-  // External siren trigger (does NOT require EmergiNet)
   if (strstr(msg, "xSiren!E1") != NULL) {
-    startExternalSiren10s();   // retriggerable
+    startExternalSiren10s();
   }
 
-  // Blank line ends EmergiNet block, not stored
   if (msg[0] == '\0') {
     inEmergiNetBlock = false;
     return;
   }
 
   bool hasEmergiNet = (strstr(msg, "EmergiNet") != NULL);
+  bool newMessageStart = false;
 
   if (!inEmergiNetBlock) {
     if (!hasEmergiNet) {
-      // Ignore non-EmergiNet messages
       alarmActive = false;
       analogWrite(PIN_BUZZER, 0);
       return;
     }
+
     inEmergiNetBlock = true;
+    newMessageStart = true;
+    messageNumber++;
   }
 
   lastBlockLineAt = millis();
 
-  // Save line
-  strncpy(messages[writeIndex], msg, MAX_LINE_LEN - 1);
-  messages[writeIndex][MAX_LINE_LEN - 1] = '\0';
+  char numberedMsg[MAX_LINE_LEN];
 
-  writeIndex = (writeIndex + 1) % MAX_LINES;
-  if (totalMessages < MAX_LINES) {
-    totalMessages++;
+  if (newMessageStart) {
+    snprintf(numberedMsg, MAX_LINE_LEN, "%d-%s", messageNumber, msg);
+  } else {
+    snprintf(numberedMsg, MAX_LINE_LEN, "  %s", msg);
   }
+
+  addWrappedMessage(numberedMsg);
 
   int visible  = (totalMessages > VISIBLE_LINES) ? VISIBLE_LINES : totalMessages;
   int maxStart = (totalMessages > visible) ? (totalMessages - visible) : 0;
   scrollIndex  = maxStart;
 
-  // Start normal beep for new displayed line (independent from external siren)
   alarmActive  = true;
   alarmEndAt   = millis() + ALARM_MS;
   lastToggle   = 0;
@@ -293,8 +371,6 @@ void storeMessage(const char *msg) {
   renderScreen();
 }
 
-// ------------------------------------------------------------------
-// Build lines from UART. Each '\n'-terminated line = message.
 // ------------------------------------------------------------------
 void handleUart() {
   while (MSG_SERIAL.available() > 0) {
@@ -308,7 +384,6 @@ void handleUart() {
         storeMessage(inbuf);
         inpos = 0;
       } else {
-        // Blank line
         storeMessage("");
       }
     } else {
@@ -320,10 +395,9 @@ void handleUart() {
 }
 
 // ------------------------------------------------------------------
-// Scrolling helpers
-// ------------------------------------------------------------------
 void scrollUp() {
   if (totalMessages == 0) return;
+
   if (scrollIndex > 0) {
     scrollIndex--;
     renderScreen();
@@ -341,11 +415,36 @@ void scrollDown() {
     renderScreen();
   }
 }
+// ------------------------------------------------------------------
+// Startup splash screen
+// ------------------------------------------------------------------
+void showSplashScreen() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.setTextSize(3);
 
+  tft.setCursor(20, 60);
+  tft.println("EmergiNet");
+
+  tft.setTextSize(2);
+
+  tft.setCursor(20, 110);
+  tft.println("Sonoma County");
+
+  tft.setCursor(20, 150);
+  tft.println(FWVERSION);
+
+  delay(5000);
+
+  tft.fillScreen(TFT_BLACK);
+}
 // ------------------------------------------------------------------
 void setup() {
+
   tft.begin();
   tft.setRotation(3);
+
+  showSplashScreen();
 
   pinMode(PIN_BUZZER, OUTPUT);
   analogWrite(PIN_BUZZER, 0);
@@ -360,9 +459,8 @@ void setup() {
   pinMode(PIN_BTN_C,     INPUT_PULLUP);
 
   pinMode(EX_BUZ_PIN, OUTPUT);
-  digitalWrite(EX_BUZ_PIN, LOW);   // siren off at boot
+  digitalWrite(EX_BUZ_PIN, LOW);
 
-  // Initialize previous joystick states to prevent startup false press
   prevUp    = digitalRead(PIN_5S_UP);
   prevDown  = digitalRead(PIN_5S_DOWN);
   prevPress = digitalRead(PIN_5S_PRESS);
@@ -375,10 +473,8 @@ void setup() {
 
 // ------------------------------------------------------------------
 void loop() {
-  // 1) Handle incoming messages
   handleUart();
 
-  // End EmergiNet block if no new line arrives for a while
   if (inEmergiNetBlock) {
     unsigned long now = millis();
     if (now - lastBlockLineAt > BLOCK_TIMEOUT_MS) {
@@ -386,21 +482,17 @@ void loop() {
     }
   }
 
-  // 2) External siren update (non-blocking)
   updateExternalSiren();
 
-  // 3) Scroll with 5-way switch + send RECEIVED (ONLY on confirmed physical press)
   int curUp    = digitalRead(PIN_5S_UP);
   int curDown  = digitalRead(PIN_5S_DOWN);
   int curPress = digitalRead(PIN_5S_PRESS);
 
-  // Detect a NEW press (HIGH -> LOW) on any of the three
   bool newEvent =
     (prevUp    == HIGH && curUp    == LOW) ||
     (prevDown  == HIGH && curDown  == LOW) ||
     (prevPress == HIGH && curPress == LOW);
 
-  // Physical-press confirmation + re-arm requirement
   if (newEvent && ackArmed) {
     bool realPress =
       (prevUp    == HIGH && curUp    == LOW && confirmPressLow(PIN_5S_UP)) ||
@@ -412,28 +504,24 @@ void loop() {
       if (now - lastAckAt >= ACK_LOCKOUT_MS) {
         sendReceivedMessage();
         lastAckAt = now;
-        ackArmed = false; // disarm until joystick is released
+        ackArmed = false;
       }
     }
   }
 
-  // Re-arm only after all relevant inputs return HIGH (released)
   if (!ackArmed && curUp == HIGH && curDown == HIGH && curPress == HIGH) {
     ackArmed = true;
   }
 
-  // Update previous states
   prevUp    = curUp;
   prevDown  = curDown;
   prevPress = curPress;
 
-  // Keep scrolling behavior (only when held low is fine)
   if (curUp == LOW)   scrollUp();
   if (curDown == LOW) scrollDown();
 
-  // 4) Clear screen and message history when A + B are pressed together
   if (digitalRead(PIN_BTN_A) == LOW && digitalRead(PIN_BTN_B) == LOW) {
-    delay(100); // debounce
+    delay(100);
     if (digitalRead(PIN_BTN_A) == LOW && digitalRead(PIN_BTN_B) == LOW) {
       clearMessages();
       delay(300);
@@ -441,14 +529,13 @@ void loop() {
   }
 
   if (digitalRead(PIN_BTN_C) == LOW && digitalRead(PIN_BTN_B) == LOW) {
-    delay(100); // debounce
+    delay(100);
     if (digitalRead(PIN_BTN_C) == LOW && digitalRead(PIN_BTN_B) == LOW) {
       helpMessages();
       delay(300);
     }
   }
 
-  // 5) Normal buzzer beep for new EmergiNet messages (independent of external siren)
   if (alarmActive) {
     unsigned long now = millis();
     if (now < alarmEndAt) {
