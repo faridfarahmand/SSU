@@ -69,9 +69,12 @@
  *    - While MsgBuff == 1, the buzzer on D2 gives a 0.5 second beep every 5 seconds.
  *    - MsgBuff is cleared when the user presses the joystick or the button handler is activated.
  *    - The periodic beep does not interrupt the existing xSiren!E1 siren or HELP beep pattern.
- *****************************************************************************************/
-/*****************************************************************************************
- *  EmergiNet – Wio Terminal Meshtastic Receiver
+
+
+ * Author: Dr. Faraid Farahmand 
+ * Compiler: Arduino
+ * Original Program: April 20-2026
+
  *****************************************************************************************/
 #include <TFT_eSPI.h>
 #include <SPI.h>
