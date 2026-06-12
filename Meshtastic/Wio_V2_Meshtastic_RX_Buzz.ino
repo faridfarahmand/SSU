@@ -64,6 +64,11 @@
  *    - Message received → alert tone on D2
  *    - HELP sent → beep-beep-beep (short beeps) for 5 seconds on D2
  *    - xSiren!E1 received → rising/falling siren pattern ("doooo-dodo") for 15 seconds on D2
+ *  Updates in 1.6 version:
+ *    - When a valid EmergiNet message is received, MsgBuff = 1.
+ *    - While MsgBuff == 1, the buzzer on D2 gives a 0.5 second beep every 5 seconds.
+ *    - MsgBuff is cleared when the user presses the joystick or the button handler is activated.
+ *    - The periodic beep does not interrupt the existing xSiren!E1 siren or HELP beep pattern.
  *****************************************************************************************/
 /*****************************************************************************************
  *  EmergiNet – Wio Terminal Meshtastic Receiver
@@ -84,13 +89,16 @@ TFT_eSPI tft;
 #define PIN_BTN_B     WIO_KEY_B
 #define PIN_BTN_C     WIO_KEY_C
 
+
 #define EX_BUZ_PIN    D2   // External active buzzer/siren pin
 
 // ---- Serial from Heltec Meshtastic ----
 #define MSG_SERIAL    Serial1
 #define BAUDRATE      115200
 
-#define FWVERSION    "Version 1.5"
+#define FWVERSION     "Version 1.6"
+#define CaptureString "#EmergiNet"
+#define SirenString   "xSiren!E1"
 
 const char* TARGET_NODE = "!9ea2084c";
 
@@ -117,6 +125,15 @@ unsigned long alarmEndAt = 0;
 unsigned long lastToggle = 0;
 const unsigned long ALARM_MS  = 5000;
 const unsigned long TOGGLE_MS = 250;
+
+// ---- MsgBuff reminder beep ----
+int MsgBuff = 0;
+bool msgBuffBeepActive = false;
+unsigned long msgBuffNextBeepAt = 0;
+unsigned long msgBuffBeepOffAt  = 0;
+
+const unsigned long MSGBUFF_BEEP_INTERVAL_MS = 5000UL;
+const unsigned long MSGBUFF_BEEP_ON_MS       = 500UL;
 
 // ---- 5-way edge detection + lockout ----
 int prevUp    = HIGH;
@@ -179,6 +196,49 @@ bool confirmPressLow(int pin) {
 }
 
 // ------------------------------------------------------------------
+// MsgBuff reminder controls
+// ------------------------------------------------------------------
+void enableMsgBuffReminder() {
+  MsgBuff = 1;
+  msgBuffBeepActive = false;
+  msgBuffNextBeepAt = millis() + MSGBUFF_BEEP_INTERVAL_MS;
+}
+
+void clearMsgBuffReminder() {
+  MsgBuff = 0;
+  msgBuffBeepActive = false;
+
+  if (extBuzzMode == EXT_BUZZ_OFF) {
+    digitalWrite(EX_BUZ_PIN, LOW);
+  }
+}
+
+void updateMsgBuffReminder() {
+  if (MsgBuff == 0) return;
+
+  unsigned long now = millis();
+
+  // Do not interfere with xSiren, HELP beep, or normal received-message alarm
+  if (extBuzzMode != EXT_BUZZ_OFF || alarmActive) {
+    msgBuffBeepActive = false;
+    msgBuffNextBeepAt = now + MSGBUFF_BEEP_INTERVAL_MS;
+    return;
+  }
+
+  if (!msgBuffBeepActive && (long)(now - msgBuffNextBeepAt) >= 0) {
+    digitalWrite(EX_BUZ_PIN, HIGH);
+    msgBuffBeepActive = true;
+    msgBuffBeepOffAt = now + MSGBUFF_BEEP_ON_MS;
+  }
+
+  if (msgBuffBeepActive && (long)(now - msgBuffBeepOffAt) >= 0) {
+    digitalWrite(EX_BUZ_PIN, LOW);
+    msgBuffBeepActive = false;
+    msgBuffNextBeepAt = now + MSGBUFF_BEEP_INTERVAL_MS;
+  }
+}
+
+// ------------------------------------------------------------------
 // External buzzer controls on D2
 // ------------------------------------------------------------------
 void stopExternalBuzzer() {
@@ -220,7 +280,7 @@ void updateExternalBuzzer() {
       // dooooo - do-do - pause - repeat
       switch (extBuzzStep) {
         case 0:
-          digitalWrite(EX_BUZ_PIN, HIGH);   // long dooooo
+          digitalWrite(EX_BUZ_PIN, HIGH);
           extBuzzNextAt = now + 900;
           extBuzzStep = 1;
           break;
@@ -232,7 +292,7 @@ void updateExternalBuzzer() {
           break;
 
         case 2:
-          digitalWrite(EX_BUZ_PIN, HIGH);   // short do
+          digitalWrite(EX_BUZ_PIN, HIGH);
           extBuzzNextAt = now + 160;
           extBuzzStep = 3;
           break;
@@ -244,7 +304,7 @@ void updateExternalBuzzer() {
           break;
 
         case 4:
-          digitalWrite(EX_BUZ_PIN, HIGH);   // short do
+          digitalWrite(EX_BUZ_PIN, HIGH);
           extBuzzNextAt = now + 160;
           extBuzzStep = 5;
           break;
@@ -399,6 +459,8 @@ void clearMessages() {
   scrollIndex   = 0;
   messageNumber = 0;
 
+  clearMsgBuffReminder();
+
   tft.fillScreen(TFT_BLACK);
 }
 
@@ -435,7 +497,7 @@ void storeMessage(const char *msg) {
   if (msg == NULL) return;
 
   // xSiren command: does NOT require EmergiNet
-  if (strstr(msg, "xSiren!E1") != NULL) {
+  if (strstr(msg, SirenString) != NULL) {
     startExternalSiren15s();
   }
 
@@ -449,7 +511,7 @@ void storeMessage(const char *msg) {
     return;
   }
 
-  bool hasEmergiNet = (strstr(msg, "EmergiNet") != NULL);
+  bool hasEmergiNet = (strstr(msg, CaptureString) != NULL);
   bool newMessageStart = false;
 
   if (!inEmergiNetBlock) {
@@ -485,12 +547,11 @@ void storeMessage(const char *msg) {
   int maxStart = (totalMessages > visible) ? (totalMessages - visible) : 0;
   scrollIndex  = maxStart;
 
-  // Existing received-message alert
-  // This now also drives the external active buzzer on D2
-  // unless xSiren or HELP pattern is currently active.
   alarmActive  = true;
   alarmEndAt   = millis() + ALARM_MS;
   lastToggle   = 0;
+
+  enableMsgBuffReminder();
 
   renderScreen();
 }
@@ -607,8 +668,6 @@ void loop() {
     }
   }
 
-  // Update xSiren or HELP external patterns first.
-  // These have priority over normal received-message alert on D2.
   updateExternalBuzzer();
 
   int curUp    = digitalRead(PIN_5S_UP);
@@ -627,6 +686,8 @@ void loop() {
       (prevPress == HIGH && curPress == LOW && confirmPressLow(PIN_5S_PRESS));
 
     if (realPress) {
+      clearMsgBuffReminder();
+
       unsigned long now = millis();
       if (now - lastAckAt >= ACK_LOCKOUT_MS) {
         sendReceivedMessage();
@@ -658,13 +719,14 @@ void loop() {
   if (digitalRead(PIN_BTN_C) == LOW) {
     delay(100);
     if (digitalRead(PIN_BTN_C) == LOW) {
+      clearMsgBuffReminder();
       helpMessages();
       delay(300);
     }
   }
 
   // Existing onboard Wio buzzer alert for received EmergiNet messages.
-  // Added: D2 external active buzzer follows the same alert pattern
+  // D2 external active buzzer follows the same alert pattern
   // unless xSiren or HELP pattern is active.
   if (alarmActive) {
     unsigned long now = millis();
@@ -690,6 +752,8 @@ void loop() {
       }
     }
   }
+
+  updateMsgBuffReminder();
 
   delay(5);
 }
