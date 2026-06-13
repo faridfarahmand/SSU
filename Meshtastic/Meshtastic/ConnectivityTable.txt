@@ -1,0 +1,10 @@
+| Node name                       | Node ID   | Role        | Altitude in meter | Coordinates              |
+| ------------------------------- | --------- | ----------- | ----------------: | ------------------------ |
+| SR Mesh Taylor Mt / SRW6        | !15ca1621 | CLIENT      |               333 | 38.39099, -122.67028     |
+| 0xF Node 1 / 0xF1               | !be2f57ed | CLIENT      |                52 | 38.50240, -122.88655     |
+| Piner High School Logger / PHSL | !49b5d680 | CLIENT_MUTE |                 9 | 38.46963, -122.77514     |
+| GreenEagle33 R1 Neo / GER1      | !d0743801 | CLIENT_MUTE |                -8 | 38.46308, -122.76859     |
+| Mount Jackson - LF              |           | ROUTER      |                   | 38.5482752, -122.9586432 |
+| Mount Jackson - MF              | !8d70d802 | ROUTER      |                   | 38.5482752, -122.9586432 |
+| Rio Dell MF Node 1              | !043b1ee4 | CLIENT_MUTE |                   | 38.608936, -122.919316   |
+| Rio Dell Node 1                 | !cd2724be | CLIENT_BASE |                   |                          |
