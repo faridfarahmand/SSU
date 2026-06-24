@@ -1,13 +1,16 @@
-| Node name                       | Node ID   | Role        | Altitude in meter | Coordinates              |
-| ------------------------------- | --------- | ----------- | ----------------: | ------------------------ |
-| SR Mesh Taylor Mt / SRW6        | !15ca1621 | CLIENT      |               333 | 38.39099, -122.67028     |
-| 0xF Node 1 / 0xF1               | !be2f57ed | CLIENT      |                52 | 38.50240, -122.88655     |
-| Cunningham node                 | !a0cc2964 | CLIENT_BASE |                26 | 38.3516672, -122.7620352 |
-| Piner High School Logger / PHSL | !49b5d680 | CLIENT_MUTE |                 9 | 38.46963, -122.77514     |
-| GreenEagle33 R1 Neo / GER1      | !d0743801 | CLIENT_MUTE |                -8 | 38.46308, -122.76859     |
-| Mount Jackson - MF              | !8d70d802 | ROUTER      |                   | 38.5482752, -122.9586432 |
-| Rio Dell MF Node 1              | !043b1ee4 | CLIENT_MUTE |                   | 38.608936, -122.919316   |
-| Rio Dell Node 1                 | !cd2724be | CLIENT_BASE |                   |                          |
+| Node name                       | Node ID   | Role        | Altitude in meter | Coordinates              |   |
+| ------------------------------- | --------- | ----------- | ----------------: | ------------------------ | - |
+| SR Mesh Taylor Mt / SRW6        | !15ca1621 | CLIENT      |               333 | 38.39099, -122.67028     |   |
+| 0xF Node 1 / 0xF1               | !be2f57ed | CLIENT      |                52 | 38.50240, -122.88655     |   |
+| Cunningham node                 | !a0cc2964 | CLIENT_BASE |                26 | 38.3516672, -122.7620352 |   |
+| Piner High School Logger / PHSL | !49b5d680 | CLIENT_MUTE |                 9 | 38.46963, -122.77514     |   |
+| GreenEagle33 R1 Neo / GER1      | !d0743801 | CLIENT_MUTE |                -8 | 38.46308, -122.76859     |   |
+| Mount Jackson - MF              | !8d70d802 | ROUTER      |                   | 38.5482752, -122.9586432 |   |
+| Rio Dell MF Node 1              | !043b1ee4 | CLIENT_MUTE |                   | 38.608936, -122.919316   |   |
+| Rio Dell Node 1                 | !cd2724be | CLIENT_BASE |                   |                          |   |
+| 0xF West SR Repeater / 0xF2     | !bf3e80d6 | CLIENT_BASE |                49 | 38.4565248, -122.7096064 |   |
+| 304 Node Modified / 3o4         | !62d9f94c | CLIENT_BASE |                   | 38.4555248, -122.7096064 | _ |
+
 
 
 
