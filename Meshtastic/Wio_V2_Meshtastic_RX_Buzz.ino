@@ -69,6 +69,8 @@
  *    - While MsgBuff == 1, the buzzer on D2 gives a 0.5 second beep every 5 seconds.
  *    - MsgBuff is cleared when the user presses the joystick or the button handler is activated.
  *    - The periodic beep does not interrupt the existing xSiren!E1 siren or HELP beep pattern.
+ *  Updates in 1.7 version:
+ *    - REMOVED — this was firing the buzzer for ANY node's HELP message,
 
 
  * Author: Dr. Faraid Farahmand 
@@ -99,8 +101,10 @@ TFT_eSPI tft;
 #define MSG_SERIAL    Serial1
 #define BAUDRATE      115200
 
-#define FWVERSION     "Version 1.6"
+#define FWVERSION     "Version 1.7"
 #define CaptureString "#EmergiNet"
+#define AutoCaptureString "#EmergiNetAuto"
+#define AutoReplyBack "RX"
 #define SirenString   "xSiren!E1"
 
 const char* TARGET_NODE = "!9ea2084c";
@@ -504,10 +508,12 @@ void storeMessage(const char *msg) {
     startExternalSiren15s();
   }
 
-  // HELP message received: does NOT require EmergiNet
-  if (strstr(msg, "HELP") != NULL) {
-    startHelpBeeps5s();
-  }
+  // REMOVED — this was firing the buzzer for ANY node's HELP message,
+  // not just this unit's own button press.
+  // if (strstr(msg, "HELP") != NULL) {
+  //   startHelpBeeps5s();
+  // }
+
 
   if (msg[0] == '\0') {
     inEmergiNetBlock = false;
