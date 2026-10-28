@@ -1,0 +1,3 @@
+USB: https://www.amazon.com/dp/B08N6XQF91/ref=sspa_dk_detail_0?psc=1&pf_rd_p=4a7f44df-467c-45a1-af5f-91661a6df2f9&pf_rd_r=N80A9A2HCH9EGBAZWCES&pd_rd_wg=cqkVt&pd_rd_w=f46FQ&content-id=amzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9&pd_rd_r=35a88863-dd29-4c54-a137-2ba7803df956&sp_csd=d2lkZ2V0TmFtZT1zcF9kZXRhaWwy
+USB C Tester, 3 in 1 Type C DC5.5 USB Meter USB Load Color Screen IPS Digital Multimeter,Voltage,Current,Power,Resistance,Capacity Detector,with Clip Cable Support PD2.0/PD3.0,QC2.0/QC3.0
+<img width="319" height="308" alt="image" src="https://github.com/user-attachments/assets/4807032c-2a69-40d0-9f2a-7cc5b93d48b3" />
